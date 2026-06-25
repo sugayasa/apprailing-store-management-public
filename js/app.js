@@ -40,6 +40,15 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('click', '[data-select="platform-dropdown-selection"]', function(e) {
+		e.preventDefault();
+		
+		const targetValue = $(this).attr('data-value');
+		const targetContainer = $(this).attr('data-target');
+		
+		$(targetContainer).html(targetValue);
+	});
+
     $('#modal-userProfile').off('show.bs.modal'),
     $('#modal-userProfile').on('show.bs.modal', function () {
         $.ajax({
@@ -53,7 +62,7 @@ $(document).ready(function () {
             headers: { Authorization: "Bearer " + getUserToken() },
             beforeSend: function () {
                 Pace.start();
-                $("#window-loader").modal("show");
+                toggleWindowLoader(true);
             },
             complete: function (jqXHR, textStatus) {
                 var responseJSON = jqXHR.responseJSON;
@@ -71,7 +80,7 @@ $(document).ready(function () {
                 }
             }
         }).always(function (jqXHR, textStatus) {
-            $("#window-loader").modal("hide");
+            toggleWindowLoader(false);
             Pace.stop();
             setUserToken(jqXHR);
         });
@@ -109,7 +118,7 @@ $(document).ready(function () {
                 headers: { Authorization: "Bearer " + getUserToken() },
                 beforeSend: function () {
                     Pace.start();
-                    $("#window-loader").modal("show");
+                    toggleWindowLoader(true);
                 },
                 complete: function (jqXHR, textStatus) {
                     var responseJSON = jqXHR.responseJSON;
@@ -135,7 +144,7 @@ $(document).ready(function () {
                     }
                 }
             }).always(function (jqXHR, textStatus) {
-                $("#window-loader").modal("hide");
+                toggleWindowLoader(false);
                 Pace.stop();
                 setUserToken(jqXHR);
             });
@@ -213,7 +222,11 @@ function getViewURL(url, alias, callback) {
         contentType: "application/json",
         dataType: "json",
         cache: true,
-        data: mergeDataSend(),
+        data: mergeDataSend(
+            {
+                alias: alias
+            }
+        ),
         xhrFields: {
             withCredentials: true,
         },
@@ -351,11 +364,12 @@ function getMessageResponse(jqXHR) {
         if (typeof responseMessage == 'undefined' && responseMessage == null) responseMessage = Object.values(responseJSON.messages)[0];
     } catch (err) {
         responseMessage =
+            jqXHR !== null &&
             jqXHR.messages != "" &&
-                jqXHR.messages !== null &&
-                jqXHR.messages !== undefined
-                ? Object.values(jqXHR.messages)[0]
-                : "";
+            jqXHR.messages !== null &&
+            jqXHR.messages !== undefined
+            ? Object.values(jqXHR.messages)[0]
+            : "Pesan error tidak tersedia";
     }
     return responseMessage;
 }
@@ -647,6 +661,215 @@ function resetSelectedOptionFirstValue(elemID) {
 
 function isValidArray(variable) {
     return Array.isArray(variable) && variable !== undefined && variable !== null && variable.length > 0;
+}
+
+function createUploadFileInput(elemID, urlUpload, successCallback = false, errorCallback = false) {
+    var lastJqXHR   =   null;
+    $("#" + elemID).uploadFile({
+        url: urlUpload,
+        multiple:false,
+        dragDrop:false,
+        acceptFiles:"image/*",
+        xhrFields: {withCredentials: true},
+        headers: {Authorization: "Bearer " + getUserToken()},
+        onSuccess:function(files,data,jqXHR,pd){
+            lastJqXHR   =   jqXHR;
+            
+            switch (jqXHR.status) {
+                case 200:
+                    if (successCallback && typeof successCallback === 'function') {
+                        successCallback(files, data, jqXHR, pd);
+                    }
+                    break;
+                default:
+                    console.log(getMessageResponse(jqXHR));
+                    generateWarningMessageResponse(jqXHR);
+                    if (errorCallback && typeof errorCallback === 'function') {
+                        errorCallback(files, data, jqXHR, pd);
+                    }
+                    break;
+            }
+
+            $('.ajax-file-upload-container').hide();
+        },
+        onError: function(files, status, errMsg, pd){
+            console.log("HTTP Status:", status);
+            console.log("Response:", errMsg);
+            try {
+                var responseJSON = typeof errMsg === "string" ? JSON.parse(errMsg) : errMsg;
+                console.log(responseJSON);
+                generateWarningMessageResponse({responseJSON: responseJSON, messages: responseJSON.messages || responseJSON.message});
+            } catch (e) {
+                $('#modalWarning').on('show.bs.modal', function() {
+                    $('#modalWarningBody').html(errMsg);
+                });
+                $('#modalWarning').modal('show');
+            }
+            $('.ajax-file-upload-container').hide();
+        }
+    });
+}
+
+function toggleWindowLoader(show = true) {
+    if (show) {
+        $("#window-loader").modal("show");
+    } else {
+        $("#window-loader").modal("hide");
+    }
+}
+
+function toastMessage(type, message) {
+    if (!$('#toastsContainer').length) {
+        $('body').append('<div class="toasts-container" id="toastsContainer"></div>');
+    }
+
+    var toastId   =   'toast-' + Date.now(),
+        bgClass   =   type === 'success' ? 'text-bg-success' :
+                      type === 'error' || type === 'danger' ? 'text-bg-danger' :
+                      type === 'warning' ? 'text-bg-warning' :
+                      type === 'info' ? 'text-bg-primary' : 'text-bg-dark',
+        iconClass =   type === 'success' ? 'fa-check-circle' :
+                      type === 'error' || type === 'danger' ? 'fa-times-circle' :
+                      type === 'warning' ? 'fa-exclamation-triangle' :
+                      type === 'info' ? 'fa-info-circle' : 'fa-bell',
+        toastHtml =   '<div id="' + toastId + '" class="toast ' + bgClass + ' border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">\
+                            <div class="toast-header ' + bgClass + ' border-0">\
+                                <i class="fa ' + iconClass + ' me-2"></i>\
+                                <strong class="me-auto">' + (type === 'success' ? 'Berhasil' : type === 'error' || type === 'danger' ? 'Gagal' : type === 'warning' ? 'Peringatan' : 'Informasi') + '</strong>\
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>\
+                            </div>\
+                            <div class="toast-body">' + message + '</div>\
+                        </div>';
+
+    $('#toastsContainer').append(toastHtml);
+    var toast = new bootstrap.Toast(document.getElementById(toastId));
+    toast.show();
+
+    document.getElementById(toastId).addEventListener('hidden.bs.toast', function () {
+        this.remove();
+    });
+}
+
+function calculateRemainingHeightDoc(extraElementIds = []) {
+    var excludedHeight   =   0;
+
+    $('.app-header').each(function() {
+        excludedHeight += $(this).outerHeight(true) || 0;
+    });
+
+    $('.app-top-nav').each(function() {
+        if ($(this).is(':visible') && window.innerWidth >= 992) {
+            excludedHeight += $(this).outerHeight(true) || 0;
+        }
+    });
+
+    $('.app-content').each(function() {
+        var $el      =   $(this),
+            padTop   =   parseInt($el.css('padding-top')) || 0;
+        excludedHeight += padTop;
+    });
+
+    if (Array.isArray(extraElementIds)) {
+        $.each(extraElementIds, function(index, id) {
+            var $el = $('#' + id);
+            if ($el.length) {
+                excludedHeight += $el.outerHeight(true) || 0;
+            }
+        });
+    }
+    
+    return window.innerHeight - excludedHeight;
+}
+
+function applyAutoResizeDocHeight(selector, extraElementIds = []) {
+    function recalculate() {
+        var remaining = calculateRemainingHeightDoc(extraElementIds);
+        $(selector).css('height', remaining + 'px');
+    }
+
+    recalculate();
+    $(window).off('resize.calculateRemainingHeightDoc').on('resize.calculateRemainingHeightDoc', recalculate);
+}
+
+function generatePagination(
+    selectorContainerPaginationInfo,
+    selectorContainerPaginationControl,
+    pageActive,
+    pageProperty,
+    comboboxId = "comboBoxPagination",
+    funcGenerateDataTable = "generateDataTable"
+) {
+    let dataNumberStart =   pageProperty.dataNumberStart,
+        dataNumberEnd   =   pageProperty.dataNumberEnd,
+        dataNumberTotal =   pageProperty.dataNumberTotal,
+        pageTotal       =   pageProperty.pageTotal;
+
+    let firstPageClass  =   pageActive == 1 ? "disabled" : "",
+        firstOnClick    =   pageActive == 1 ? "" : funcGenerateDataTable + "(1)",
+        firstButton     =   '<span class="paginationElem btn btn-outline-dark ' + firstPageClass + '" aria-label="Awal" onclick="' + firstOnClick + '">\
+                                <i class="fa fa-angle-double-left"></i>\
+                            </span>';
+
+    let lastPageClass  =   pageActive == pageTotal ? "disabled" : "",
+        lastOnClick    =   pageActive == pageTotal ? "" : funcGenerateDataTable + "(" + pageTotal + ")",
+        lastButton     =   '<span class="paginationElem btn btn-outline-dark ' + lastPageClass + '" aria-label="Akhir" onclick="' + lastOnClick + '">\
+                                <i class="fa fa-angle-double-right"></i>\
+                            </span>';
+
+    let nextPageNum     =   pageActive * 1 + 1,
+        nextPageClass   =   pageActive == pageTotal || pageTotal == 0 || nextPageNum > pageTotal ? "disabled" : "",
+        nextOnClick     =   pageActive == pageTotal || pageTotal == 0 || nextPageNum > pageTotal ? "" : funcGenerateDataTable + "(" + nextPageNum + ")",
+        nextButton      =   '<span class="paginationElem btn btn-outline-dark ' + nextPageClass + '" aria-label="Selanjutnya" onclick="' + nextOnClick + '">\
+                                <i class="fa fa-chevron-right"></i>\
+                            </span>';
+
+    let prevPageNum     =   pageActive * 1 - 1;
+        prevPageClass   =   pageActive == 1 || pageTotal <= 1 ? "disabled" : "";
+        prevOnClick     =   pageActive == 1 || pageTotal <= 1 ? "" : funcGenerateDataTable + "(" + prevPageNum + ", " + funcGenerateDataTable + ")";
+        prevButton      =   '<span class="paginationElem btn btn-outline-dark ' + prevPageClass + '" aria-label="Sebelumnya" onclick="' + prevOnClick + '">\
+                                <i class="fa fa-chevron-left"></i>\
+                            </span>';
+    let comboBoxPageInfo=   '<select class="paginationElem btn btn-outline-dark px-2" id="' + comboboxId + '" style="min-width: 68px;">';
+
+    if (pageTotal > 0) {
+        for (let j = 1; j <= pageTotal; j++) {
+            let selectedStr =   j == pageActive ? "selected" : "";
+            comboBoxPageInfo+=  '<option value="' + j + '" ' + selectedStr + '>' + j + '</option>';
+        }
+    }
+
+    comboBoxPageInfo    +=  '</select>';
+    $("#" + selectorContainerPaginationInfo).html("Menampilkan data ke-<b>" + dataNumberStart + "</b> sampai <b>" + dataNumberEnd + "</b> dari <b>" + dataNumberTotal+"</b> data");
+    $("#" + selectorContainerPaginationControl).html(firstButton + prevButton + comboBoxPageInfo + nextButton + lastButton);
+
+    $("#" + comboboxId).off("change");
+    $("#" + comboboxId).on("change", function() {
+        let selectedPage = $(this).val();
+        if (selectedPage != pageActive) {
+            window[funcGenerateDataTable](selectedPage);
+        }
+    });
+}
+
+function setElemDisabledProperty(arrElemIDClass, isDisabled = true) {
+    if (!Array.isArray(arrElemIDClass)) {
+        arrElemIDClass = [arrElemIDClass];
+    }
+
+    arrElemIDClass.forEach(function(elemIDClass) {
+        let $elem   =   $(elemIDClass);
+        if ($elem.length) {
+            let originDisabledProperty  =   $elem.prop("disabled");
+
+            if(isDisabled){
+                $elem.prop("disabled", true).attr("data-origin-disabled", originDisabledProperty);
+            } else {
+                let isDisabledOrigin    =   $elem.attr("data-origin-disabled"),
+                    isDisabled          =   isDisabledOrigin === "true" || isDisabledOrigin === true ? true : false;
+                $elem.prop("disabled", isDisabled).removeAttr("data-origin-disabled");
+            }
+        }
+    });
 }
 
 window.onload = function () {

@@ -94,7 +94,7 @@ function loadLogin() {
                     beforeSend: function () {
                         Pace.start();
                         clearUserToken();
-                        $("#window-loader").modal("show");
+                        toggleWindowLoader(true);
                     },
                     complete: function (jqXHR, textStatus) {
                         var responseJSON = jqXHR.responseJSON;
@@ -103,7 +103,7 @@ function loadLogin() {
                         });
                     },
                 }).always(function (jqXHR, textStatus) {
-                    $("#window-loader").modal("hide");
+                    toggleWindowLoader(false);
                     Pace.stop();
                     setUserToken(jqXHR, false, token);
                 });

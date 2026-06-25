@@ -246,7 +246,7 @@ $('#editorUserAdmin-form').on('submit', function (e) {
             },
             beforeSend: function () {
                 NProgress.set(0.4);
-                $("#window-loader").modal("show");
+                toggleWindowLoader(true);
             },
             complete: function (jqXHR, textStatus) {
                 var responseJSON = jqXHR.responseJSON;
@@ -265,7 +265,7 @@ $('#editorUserAdmin-form').on('submit', function (e) {
                 }
             }
         }).always(function (jqXHR, textStatus) {
-            $("#window-loader").modal("hide");
+            toggleWindowLoader(false);
             NProgress.done();
             setUserToken(jqXHR);
         });
