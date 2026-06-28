@@ -15,7 +15,7 @@ if (customerDataDasarKategoriProdukFunc == null) {
             $('#btnAddKategoriProduk').on('click', function() {
                 modalEditor
                 .find('input[name="kategoriProduk"]').val('').end()
-                .find('input[name="deskripsi"]').val('').end()
+                .find('textarea[name="deskripsi"]').val('').end()
                 .find('input[name="status"][value="1"]').prop('checked', true).end()
                 .find('input[name="idKategoriProduk"]').val('');
 
