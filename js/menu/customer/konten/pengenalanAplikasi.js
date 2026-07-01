@@ -16,7 +16,6 @@ if (customerKontenPengenalanAplikasiFunc == null) {
             getCustomerKontenPengenalanAplikasi();
 
             $('#btnAddSlide').on('click', function() {
-                createUploaderImageOnboarding();
                 modalEditor
                 .find('textarea[name="kontenDeskripsi"]').val('').end()
                 .find('input[name="status"][value="1"]').prop('checked', true).end()
@@ -25,6 +24,9 @@ if (customerKontenPengenalanAplikasiFunc == null) {
                 
                 modalEditor.find("#onboardingImg").removeAttr('src').attr("src", imageOnboardingDefault);
                 modalEditor.modal('show');
+                modalEditor.one('shown.bs.modal', function() {
+                    createUploaderImageOnboarding();
+                });
                 activateOnSubmitFormEditor();
             });
         });
@@ -163,7 +165,6 @@ function activateOnClickBtnDetail() {
             imageOnboarding =   $(this).data('image'),
             status          =   $(this).data('status');
             
-        createUploaderImageOnboarding();
         modalEditor.find("#onboardingImg").removeAttr('src').attr("src", imageOnboardingBaseUrl + imageOnboarding);
         modalEditor
         .find('textarea[name="kontenDeskripsi"]').val(kontenDeskripsi).end()
@@ -172,6 +173,9 @@ function activateOnClickBtnDetail() {
         .find('input[name="imageFileName"]').val(imageOnboarding);
 
         modalEditor.modal('show');
+        modalEditor.one('shown.bs.modal', function() {
+            createUploaderImageOnboarding();
+        });
         activateOnSubmitFormEditor();
     });
 }

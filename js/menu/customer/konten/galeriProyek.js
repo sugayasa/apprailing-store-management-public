@@ -18,7 +18,6 @@ if (customerKontenGaleriProyekFunc == null) {
             getCustomerKontenGaleriProyek();
 
             $('#btnAddGaleriProyek').on('click', function() {
-                createUploaderImageGaleriProyek();
                 modalEditor
                 .find('input[name="idMerkUtama"]').val('').end()
                 .find('input[name="namaKlien"]').val('').end()
@@ -30,6 +29,9 @@ if (customerKontenGaleriProyekFunc == null) {
                 
                 modalEditor.find("#galeriProyekImg").removeAttr('src').attr("src", imageGaleriProyekDefault);
                 modalEditor.modal('show');
+                modalEditor.one('shown.bs.modal', function() {
+                    createUploaderImageGaleriProyek();
+                });
                 activateOnSubmitFormEditor();
             });
             
@@ -148,7 +150,6 @@ function activateOnClickGaleriProyek() {
             deskripsi       =   $(this).data('deskripsi'),
             image           =   $(this).data('image');
 
-        createUploaderImageGaleriProyek();
         modalEditor.find("#galeriProyekImg").removeAttr('src').attr("src", imageGaleriProyekBaseUrl + image);
         modalEditor
         .find('input[name="idMerkUtama"]').val(idMerkUtama).end()
@@ -160,6 +161,9 @@ function activateOnClickGaleriProyek() {
         .find('input[name="imageFileName"]').val(image);
 
         modalEditor.modal('show');
+        modalEditor.one('shown.bs.modal', function() {
+            createUploaderImageGaleriProyek();
+        });
         activateOnSubmitFormEditor();
     });
 }

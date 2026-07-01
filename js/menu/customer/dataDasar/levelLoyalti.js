@@ -12,9 +12,6 @@ if (customerDataDasarLevelLoyaltiFunc == null) {
             getCustomerDataDasarLevelLoyalti();
 
             $('#btnAddLevelLoyalti').on('click', function() {
-                createUploaderCardLevelLoyalti();
-                createUploaderIconLevelLoyalti();
-
                 modalEditor
                 .find('input[name="levelLoyalti"]').val('').end()
                 .find('input[name="deskripsi"]').val('').end()
@@ -28,6 +25,10 @@ if (customerDataDasarLevelLoyaltiFunc == null) {
                 $("#cardLevelLoyaltiImg").removeAttr('src').attr("src", levelLoyaltiCardDefault);
                 $("#iconLevelLoyaltiImg").removeAttr('src').attr("src", levelLoyaltiIconDefault);
                 modalEditor.modal('show');
+                modalEditor.one('shown.bs.modal', function() {
+                    createUploaderCardLevelLoyalti();
+                    createUploaderIconLevelLoyalti();
+                });
                 activateOnSubmitFormEditor();
             });
         });
@@ -128,8 +129,6 @@ function activateOnClickBtnDetail() {
             cardFile            =   $(this).data('card-file'),
             status              =   $(this).data('status');
 
-        createUploaderCardLevelLoyalti();
-        createUploaderIconLevelLoyalti();
         $("#cardLevelLoyaltiImg").removeAttr('src').attr("src", levelLoyaltiCardBaseUrl + cardFile);
         $("#iconLevelLoyaltiImg").removeAttr('src').attr("src", levelLoyaltiIconBaseUrl + iconFile);
 
@@ -144,6 +143,10 @@ function activateOnClickBtnDetail() {
         .find('input[name="iconFileName"]').val(iconFile);
 
         modalEditor.modal('show');
+        modalEditor.one('shown.bs.modal', function() {
+            createUploaderCardLevelLoyalti();
+            createUploaderIconLevelLoyalti();
+        });
         activateOnSubmitFormEditor();
     });
 }
