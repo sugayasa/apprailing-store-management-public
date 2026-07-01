@@ -19,6 +19,7 @@ if (customerDataDasarLevelLoyaltiFunc == null) {
                 .find('input[name="levelLoyalti"]').val('').end()
                 .find('input[name="deskripsi"]').val('').end()
                 .find('input[name="minNominalPembelian"]').val('0').end()
+                .find('input[name="minPoin"]').val('0').end()
                 .find('input[name="status"][value="1"]').prop('checked', true).end()
                 .find('input[name="idCustomerLoyalti"]').val('').end()
                 .find('input[name="cardFileName"]').val('').end()
@@ -71,6 +72,7 @@ function getCustomerDataDasarLevelLoyalti() {
                                             <div class="title text-truncate">' + arrayData.LOYALTITIER +'</div>\
                                             <div class="desc text-truncate">' + arrayData.DESKRIPSI +'</div>\
                                             <div class="desc text-truncate d-flex justify-content-between mb-1"><span>Min. Pembelian : </span>' + numberFormat(arrayData.MINIMALNOMINALPEMBELIAN) + '</div>\
+                                            <div class="desc text-truncate d-flex justify-content-between mb-1"><span>Min. Poin : </span>' + numberFormat(arrayData.MINIMALPOIN) + '</div>\
                                             <div class="desc text-truncate d-flex justify-content-between mb-1"><span>Status : </span>' + statusBadge + '</div>\
                                             <div class="desc text-truncate d-flex justify-content-between" style="line-height: 2;">\
                                                 <span>Icon : </span>\
@@ -83,6 +85,7 @@ function getCustomerDataDasarLevelLoyalti() {
                                                     data-loyalti-tier="' + arrayData.LOYALTITIER + '" \
                                                     data-deskripsi="' + arrayData.DESKRIPSI + '" \
                                                     data-min-nominal-pembelian="' + numberFormat(arrayData.MINIMALNOMINALPEMBELIAN) + '" \
+                                                    data-min-poin="' + numberFormat(arrayData.MINIMALPOIN) + '" \
                                                     data-icon-file="' + arrayData.ICONFILE + '" \
                                                     data-card-file="' + arrayData.CARDFILE + '" \
                                                     data-status="' + arrayData.STATUS + '"\
@@ -120,6 +123,7 @@ function activateOnClickBtnDetail() {
             loyaltiTier         =   $(this).data('loyalti-tier'),
             deskripsi           =   $(this).data('deskripsi'),
             minNominalPembelian =   $(this).data('min-nominal-pembelian'),
+            minPoin             =   $(this).data('min-poin'),
             iconFile            =   $(this).data('icon-file'),
             cardFile            =   $(this).data('card-file'),
             status              =   $(this).data('status');
@@ -133,9 +137,10 @@ function activateOnClickBtnDetail() {
         .find('input[name="levelLoyalti"]').val(loyaltiTier).end()
         .find('input[name="deskripsi"]').val(deskripsi).end()
         .find('input[name="minNominalPembelian"]').val(numberFormat(minNominalPembelian)).end()
+        .find('input[name="minPoin"]').val(numberFormat(minPoin)).end()
         .find('input[name="status"][value="' + parseInt(status) + '"]').prop('checked', true).end()
         .find('input[name="idCustomerLoyalti"]').val(idLevelLoyalti).end()
-        .find('input[name="cardFileName"]').val(cardFile)
+        .find('input[name="cardFileName"]').val(cardFile).end()
         .find('input[name="iconFileName"]').val(iconFile);
 
         modalEditor.modal('show');
@@ -167,7 +172,7 @@ function activateOnSubmitFormEditor() {
             dataSend    =   {};
 
         $.each(formData, function (index, field) {
-            if (field.name == "minNominalPembelian") {
+            if (field.name == "minNominalPembelian" || field.name == "minPoin") {
                 dataSend[field.name]  =   parseInt(field.value.replace(/,/g, ''));
             } else {
                 dataSend[field.name]  =   field.value;
