@@ -20,7 +20,9 @@ if (customerDataDasarMerkFunc == null) {
                 
                 modalEditor.find("#logoMerkImg").removeAttr('src').attr("src", logoMerkDefault);
                 modalEditor.modal('show');
-                createUploaderLogoMerk();
+                modalEditor.one('shown.bs.modal', function() {
+                    createUploaderLogoMerk();
+                });
                 activateOnSubmitFormEditor();
             });
         });
@@ -111,7 +113,9 @@ function activateOnClickBtnDetail() {
         .find('input[name="logoFileName"]').val(logoMerk);
 
         modalEditor.modal('show');
-        createUploaderLogoMerk();
+        modalEditor.one('shown.bs.modal', function() {
+            createUploaderLogoMerk();
+        });
         activateOnSubmitFormEditor();
     });
 }
