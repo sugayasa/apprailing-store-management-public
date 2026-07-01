@@ -12,7 +12,6 @@ if (customerDataDasarMerkFunc == null) {
             getCustomerDataDasarMerk();
 
             $('#btnAddMerk').on('click', function() {
-                createUploaderLogoMerk();
                 modalEditor
                 .find('input[name="namaMerk"]').val('').end()
                 .find('input[name="status"][value="1"]').prop('checked', true).end()
@@ -21,6 +20,7 @@ if (customerDataDasarMerkFunc == null) {
                 
                 modalEditor.find("#logoMerkImg").removeAttr('src').attr("src", logoMerkDefault);
                 modalEditor.modal('show');
+                createUploaderLogoMerk();
                 activateOnSubmitFormEditor();
             });
         });
@@ -103,7 +103,6 @@ function activateOnClickBtnDetail() {
             logoMerk=   $(this).data('logo'),
             status  =   $(this).data('status');
 
-        createUploaderLogoMerk();
         modalEditor.find("#logoMerkImg").removeAttr('src').attr("src", logoMerkBaseUrl + logoMerk);
         modalEditor
         .find('input[name="namaMerk"]').val(namaMerk).end()
@@ -112,6 +111,7 @@ function activateOnClickBtnDetail() {
         .find('input[name="logoFileName"]').val(logoMerk);
 
         modalEditor.modal('show');
+        createUploaderLogoMerk();
         activateOnSubmitFormEditor();
     });
 }
