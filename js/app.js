@@ -664,8 +664,13 @@ function isValidArray(variable) {
 }
 
 function createUploadFileInput(elemID, urlUpload, successCallback = false, errorCallback = false) {
+    console.log('[TRACE] createUploadFileInput called, elemID:', elemID);
+    console.log('[TRACE] jQuery object length:', $('#' + elemID).length);
+    console.log('[TRACE] uploadFile plugin available:', typeof $.fn.uploadFile);
+
     var lastJqXHR   =   null;
-    $("#" + elemID).uploadFile({
+    try {
+        $("#" + elemID).uploadFile({
         url: urlUpload,
         multiple:false,
         dragDrop:false,
@@ -708,6 +713,12 @@ function createUploadFileInput(elemID, urlUpload, successCallback = false, error
             $('.ajax-file-upload-container').hide();
         }
     });
+        console.log('[TRACE] uploadFile() init completed');
+        console.log('[TRACE] .ajax-file-upload-container count:', $('.ajax-file-upload-container').length);
+        console.log('[TRACE] #' + elemID + ' file input count:', $('#' + elemID).find('input[type="file"]').length);
+    } catch(e) {
+        console.error('[TRACE] uploadFile() threw error:', e);
+    }
 }
 
 function toggleWindowLoader(show = true) {

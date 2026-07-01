@@ -117,6 +117,11 @@ function activateOnClickBtnDetail() {
 }
 
 function createUploaderLogoMerk() {
+    console.log('[TRACE] createUploaderLogoMerk called');
+    console.log('[TRACE] elem #uploadLogoMerk exists:', document.getElementById('uploadLogoMerk'));
+    console.log('[TRACE] elem visible:', $('#uploadLogoMerk').is(':visible'));
+    console.log('[TRACE] urlUpload:', baseURLPath + "uploadLogo");
+
     createUploadFileInput("uploadLogoMerk", baseURLPath+"uploadLogo", function(files, data, jqXHR, pd) {
         var responseJSON=   jqXHR.responseJSON;
         modalEditor.find("#logoMerkImg").removeAttr('src').attr("src", responseJSON.urlLogo);
