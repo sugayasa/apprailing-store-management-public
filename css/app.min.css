@@ -30022,8 +30022,17 @@ body .note-modal-backdrop {
 
 /*# sourceMappingURL=app.min.css.map */
 
+/* Custom CSS */
+
+/* Border kiri untuk versi desktop */
 @media (min-width: 992px) {
     .border-start-lg {
         border-left: 1px solid #dee2e6 !important;
     }
+}
+
+/* Loader style */
+#window-loader + .modal-backdrop {
+    z-index: 9998 !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
 }

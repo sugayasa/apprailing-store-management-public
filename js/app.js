@@ -672,7 +672,11 @@ function createUploadFileInput(elemID, urlUpload, successCallback = false, error
         acceptFiles: filetype,
         xhrFields: {withCredentials: true},
         headers: {Authorization: "Bearer " + getUserToken()},
+        onSelect: function(files, pd) {
+            toggleWindowLoader(true);
+        },
         onSuccess:function(files,data,jqXHR,pd){
+            toggleWindowLoader(false);
             lastJqXHR   =   jqXHR;
             
             switch (jqXHR.status) {
@@ -693,6 +697,7 @@ function createUploadFileInput(elemID, urlUpload, successCallback = false, error
             $('.ajax-file-upload-container').hide();
         },
         onError: function(files, status, errMsg, pd){
+            toggleWindowLoader(false);
             console.log("HTTP Status:", status);
             console.log("Response:", errMsg);
             try {
