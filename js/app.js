@@ -663,13 +663,13 @@ function isValidArray(variable) {
     return Array.isArray(variable) && variable !== undefined && variable !== null && variable.length > 0;
 }
 
-function createUploadFileInput(elemID, urlUpload, successCallback = false, errorCallback = false) {
+function createUploadFileInput(elemID, urlUpload, successCallback = false, errorCallback = false, filetype = "image/*") {
     var lastJqXHR   =   null;
     $("#" + elemID).uploadFile({
         url: urlUpload,
         multiple:false,
         dragDrop:false,
-        acceptFiles:"image/*",
+        acceptFiles: filetype,
         xhrFields: {withCredentials: true},
         headers: {Authorization: "Bearer " + getUserToken()},
         onSuccess:function(files,data,jqXHR,pd){

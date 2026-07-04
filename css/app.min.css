@@ -30021,3 +30021,9 @@ body .note-modal-backdrop {
 }
 
 /*# sourceMappingURL=app.min.css.map */
+
+@media (min-width: 992px) {
+    .border-start-lg {
+        border-left: 1px solid #dee2e6 !important;
+    }
+}

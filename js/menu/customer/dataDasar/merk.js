@@ -1,10 +1,13 @@
-var baseURLPath         =   baseURL + "customer/dataDasar/merk/",
-    containerContent    =   $('#customerDataDasarMerk-content'),
-    modalEditor         =   $('#customerDataDasarMerk-editor'),
-    defaultEmptyContent =   '<div class="text-center py-4">\
-                                <i class="fa fa-inbox fa-3x text-muted mb-3"></i>\
-                                <p class="text-muted mb-0">Tidak ada data tersedia</p>\
-                            </div>';
+var baseURLPath                 =   baseURL + "customer/dataDasar/merk/",
+    containerContent            =   $('#customerDataDasarMerk-content'),
+    modalEditor                 =   $('#customerDataDasarMerk-editor'),
+    modalEditorKatalog          =   $('#customerDataDasarMerk-editorKatalog'),
+    urlAssetPdfKatalogThumbnail =   "",
+    urlAssetPdfKatalogFile      =   "",
+    defaultEmptyContent         =   '<div class="text-center py-4">\
+                                        <i class="fa fa-inbox fa-3x text-muted mb-3"></i>\
+                                        <p class="text-muted mb-0">Tidak ada data tersedia</p>\
+                                    </div>';
 
 if (customerDataDasarMerkFunc == null) {
     var customerDataDasarMerkFunc = function () {
@@ -51,11 +54,17 @@ function getCustomerDataDasarMerk() {
                 case 200:
                     let listData        =   responseJSON.listData,
                         urlAssetLogoMerk=   responseJSON.urlAssetLogoMerk;
+                    
+                    urlAssetPdfKatalogThumbnail=   responseJSON.urlAssetPdfKatalogThumbnail;
+                    urlAssetPdfKatalogFile     =   responseJSON.urlAssetPdfKatalogFile;
 
                     $.each(listData, function (index, arrayData) {
                         let statusBadge =   parseInt(arrayData.STATUS) == 1 ?
                                             '<span>Aktif <i class="far fa-check-circle text-success fa-fw fa-lg"></i></span>' :
-                                            '<span>Tidak Aktif <i class="far fa-times-circle text-danger fa-fw fa-lg"></i></span>';
+                                            '<span>Tidak Aktif <i class="far fa-times-circle text-danger fa-fw fa-lg"></i></span>',
+                            statusBadgeKatalogBrosur =   parseInt(arrayData.STATUSKATALOG) == 1 ?
+                                            '<span>Tersedia <i class="far fa-check-circle text-success fa-fw fa-lg"></i></span>' :
+                                            '<span>Tidak Tersedia <i class="far fa-times-circle text-danger fa-fw fa-lg"></i></span>';
 
                         rows += '<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 pb-3">\
                                     <div class="pos-product">\
@@ -63,6 +72,7 @@ function getCustomerDataDasarMerk() {
                                         <div class="info">\
                                             <div class="title text-truncate">' + arrayData.NAMAMERK +'</div>\
                                             <div class="desc text-truncate d-flex justify-content-between"><span>Status : </span>' + statusBadge + '</div>\
+                                            <div class="desc text-truncate d-flex justify-content-between"><span>Katalog Brosur : </span>' + statusBadgeKatalogBrosur + '</div>\
                                             <div class="mt-1">\
                                                 <span \
                                                     class="btn btn-theme fw-semibold d-block mb-2 btn-detail" \
@@ -71,6 +81,15 @@ function getCustomerDataDasarMerk() {
                                                     data-logo="' + arrayData.LOGO + '" \
                                                     data-status="' + arrayData.STATUS + '"\
                                                 >Detail</span>\
+                                            </div>\
+                                            <div class="mt-1">\
+                                                <span \
+                                                    class="btn btn-info fw-semibold d-block mb-2 btn-detail-katalog" \
+                                                    data-id="' + arrayData.IDMERK + '" \
+                                                    data-pdf-thumbnail="' + arrayData.PDFTHUMBNAIL + '" \
+                                                    data-pdf-file="' + arrayData.PDFFILE + '" \
+                                                    data-status-katalog="' + arrayData.STATUSKATALOG + '"\
+                                                >Detail Katalog</span>\
                                             </div>\
                                         </div>\
                                     </div>\
@@ -89,7 +108,7 @@ function getCustomerDataDasarMerk() {
             }
 
             containerContent.html(rows);
-            activateOnClickBtnDetail();
+            activateOnClickBtnDetailKatalog();
         }
     }).always(function (jqXHR, textStatus) {
         Pace.stop();
@@ -157,6 +176,92 @@ function activateOnSubmitFormEditor() {
                     case 200:
                         toastMessage("success", getMessageResponse(jqXHR));
                         modalEditor.modal('hide');
+                        getCustomerDataDasarMerk();
+                        break;
+                    default:
+                        generateWarningMessageResponse(jqXHR);
+                        break;
+                }
+            }
+        }).always(function (jqXHR, textStatus) {
+            toggleWindowLoader(false);
+            Pace.stop();
+
+            setUserToken(jqXHR);
+        });
+    });
+}
+
+function activateOnClickBtnDetailKatalog() {
+    $('.btn-detail-katalog').off('click');
+    $('.btn-detail-katalog').on('click', function() {
+        let idMerk      =   $(this).data('id'),
+            pdfThumbnail=   $(this).data('pdf-thumbnail'),
+            pdfFile     =   $(this).data('pdf-file'),
+            status      =   $(this).data('status-katalog');
+
+        modalEditorKatalog.find("#pdfThumbnail").removeAttr('src').attr("src", urlAssetPdfKatalogThumbnail + pdfThumbnail);
+        modalEditorKatalog.find("#pdfFile").removeAttr('src').attr("src", urlAssetPdfKatalogFile + pdfFile);
+        modalEditorKatalog
+        .find('input[name="pdfThumbnailName"]').val(pdfThumbnail).end()
+        .find('input[name="pdfFileName"]').val(pdfFile).end()
+        .find('input[name="status"][value="' + parseInt(status) + '"]').prop('checked', true).end()
+        .find('input[name="idMerk"]').val(idMerk);
+
+        modalEditorKatalog.modal('show');
+        modalEditorKatalog.one('shown.bs.modal', function() {
+            createUploaderPdfKatalogThumbnail();
+            createUploaderPdfKatalogFile();
+        });
+        activateOnSubmitFormEditorKatalog();
+    });
+}
+
+function createUploaderPdfKatalogThumbnail() {
+    createUploadFileInput("uploadPdfThumbnail", baseURLPath+"uploadPdfKatalogThumbnail", function(files, data, jqXHR, pd) {
+        var responseJSON=   jqXHR.responseJSON;
+        modalEditorKatalog.find("#pdfThumbnail").removeAttr('src').attr("src", responseJSON.urlPdfKatalogThumbnail);
+        modalEditorKatalog.find('input[name="pdfThumbnailName"]').val(responseJSON.pdfKatalogThumbnailName);
+    });
+}
+
+function createUploaderPdfKatalogFile() {
+    createUploadFileInput("uploadPdfFile", baseURLPath+"uploadPdfKatalogFile", function(files, data, jqXHR, pd) {
+        var responseJSON=   jqXHR.responseJSON;
+        modalEditorKatalog.find("#pdfFile").removeAttr('src').attr("src", responseJSON.urlPdfKatalogFile);
+        modalEditorKatalog.find('input[name="pdfFileName"]').val(responseJSON.pdfKatalogFileName);
+    }, false, "application/pdf");
+}
+
+function activateOnSubmitFormEditorKatalog() {
+    modalEditorKatalog.find('form').off('submit');
+    modalEditorKatalog.find('form').on('submit', function(e) {
+        e.preventDefault();
+        let formData    =   $(this).serializeArray(),
+            dataSend    =   {};
+
+        $.each(formData, function (index, field) {
+            dataSend[field.name]  =   field.value;
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: baseURLPath + "saveDataKatalog",
+            contentType: 'application/json',
+            dataType: 'json',
+            cache: false,
+            data: mergeDataSend(dataSend),
+            xhrFields: {withCredentials: true},
+            headers: {Authorization: "Bearer " + getUserToken()},
+            beforeSend: function () {
+                Pace.start();
+                toggleWindowLoader(true);
+            },
+            complete: function (jqXHR, textStatus) {
+                switch (jqXHR.status) {
+                    case 200:
+                        toastMessage("success", getMessageResponse(jqXHR));
+                        modalEditorKatalog.modal('hide');
                         getCustomerDataDasarMerk();
                         break;
                     default:
