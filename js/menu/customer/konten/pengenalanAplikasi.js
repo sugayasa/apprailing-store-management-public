@@ -6,7 +6,7 @@ var baseURLPath             =   baseURL + "customer/konten/pengenalanAplikasi/",
     defaultEmptyContent     =   '<div class="text-center py-4">\
                                     <i class="fa fa-inbox fa-3x text-muted mb-3"></i>\
                                     <p class="text-muted mb-0">Tidak ada data tersedia</p>\
-                                </div>'
+                                </div>',
     sortableUrutan          =   null,
     arrUrutanSlide          =   null;
 
@@ -63,7 +63,7 @@ function getCustomerKontenPengenalanAplikasi() {
                         
                         liSortableUrutan+=  parseInt(arrayData.STATUS) == 1 ?
                                             '<li class="list-group-item d-flex align-items-center text-truncate" data-id="'+ arrayData.IDSLIDEBOARDING +'">\
-                                                <i class="fa fa-bars me-1"></i> ' + arrayData.KONTEN +'\
+                                                <i class="fa fa-bars me-2"></i> ' + arrayData.KONTEN +'\
                                             </li>' :
                                             '';
 
@@ -108,7 +108,7 @@ function getCustomerKontenPengenalanAplikasi() {
 
             containerSortableUrutan.innerHTML   =   liSortableUrutan;
             sortableUrutan  =   Sortable.create(containerSortableUrutan);
-            activateOnSubmitFormurutanSlide();
+            activateOnSubmitFormUrutanSlide();
         }
     }).always(function (jqXHR, textStatus) {
         Pace.stop();
@@ -116,7 +116,7 @@ function getCustomerKontenPengenalanAplikasi() {
     });
 }
 
-function activateOnSubmitFormurutanSlide() {
+function activateOnSubmitFormUrutanSlide() {
     modalUrutanSlide.find('form').off('submit');
     modalUrutanSlide.find('form').on('submit', function(e) {
         e.preventDefault();
