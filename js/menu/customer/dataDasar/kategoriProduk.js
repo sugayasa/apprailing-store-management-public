@@ -56,7 +56,7 @@ function getCustomerDataDasarKategoriProduk(pageNumber = 1) {
         beforeSend: function () {
             Pace.start();
             setElemDisabledProperty(['.paginationElem', '#btnAddKategoriProduk', '#customerDataDasarKategoriProduk-searchKeyword'], true);
-            dataTableContent.html("<tr><td colspan='4' class='text-center border-bottom-0'>"+loaderElem+"</td></tr>");
+            dataTableContent.html("<tr><td colspan='" + totalColumns + "' class='text-center border-bottom-0'>" + loaderElem + "</td></tr>");
         },
         complete: function (jqXHR, textStatus) {
             var responseJSON=   jqXHR.responseJSON,

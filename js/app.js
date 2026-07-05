@@ -877,6 +877,20 @@ function setElemDisabledProperty(arrElemIDClass, isDisabled = true) {
     });
 }
 
+function toggleSlideContainer(leftContainer, rightContainer) {
+	if ($("#"+leftContainer).hasClass('show')) {
+		$("#"+leftContainer).find(".card, .box, .row, .nav").addClass('d-none');
+		$("#"+leftContainer).removeClass('show').addClass('d-none');
+		$("#"+rightContainer).removeClass('d-none').addClass('show');
+		$("#"+rightContainer).find(".card, .box, .row, .nav").removeClass('d-none');
+	} else {
+		$("#"+rightContainer).find(".card, .box, .row, .nav").addClass('d-none');
+		$("#"+rightContainer).removeClass('show').addClass('d-none');
+		$("#"+leftContainer).removeClass('d-none').addClass('show');
+		$("#"+leftContainer).find(".card, .box, .row, .nav").removeClass('d-none');
+	}
+}
+
 window.onload = function () {
     history.pushState(null, null, window.location.href);
 
