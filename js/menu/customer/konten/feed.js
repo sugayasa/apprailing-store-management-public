@@ -185,6 +185,7 @@ function activateOnClickRowData() {
 
         var urlFeed = $(this).find('td').eq(2).find('a').attr('href');
         if (urlFeed) loadVideoFeed(urlFeed);
+        activateOnClickNextPrevVideoButton();
     });
 }
 
