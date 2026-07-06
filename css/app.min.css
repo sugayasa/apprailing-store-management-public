@@ -30036,3 +30036,12 @@ body .note-modal-backdrop {
     z-index: 9998 !important;
     background-color: rgba(0, 0, 0, 0.8) !important;
 }
+
+/* Table selected row style */
+.table-selected-row {
+    outline: 3px solid #535559;
+    outline-offset: -3px;
+}
+.table-selected-row td {
+    background-color: rgba(13, 110, 253, 0.05) !important;
+}

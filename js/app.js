@@ -891,6 +891,36 @@ function toggleSlideContainer(leftContainer, rightContainer) {
 	}
 }
 
+function getYoutubeVideoId(url) {
+    var videoId = '';
+
+    // Youtube Shorts: youtube.com/shorts/VIDEO_ID
+    var shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+    if (shortsMatch) {
+        videoId = shortsMatch[1];
+    }
+
+    // Youtube watch: youtube.com/watch?v=VIDEO_ID
+    if (!videoId) {
+        var watchMatch = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+        if (watchMatch) videoId = watchMatch[1];
+    }
+
+    // youtu.be/VIDEO_ID
+    if (!videoId) {
+        var shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+        if (shortMatch) videoId = shortMatch[1];
+    }
+
+    // Youtube embed: youtube.com/embed/VIDEO_ID
+    if (!videoId) {
+        var embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+        if (embedMatch) videoId = embedMatch[1];
+    }
+
+    return videoId;
+}
+
 window.onload = function () {
     history.pushState(null, null, window.location.href);
 
