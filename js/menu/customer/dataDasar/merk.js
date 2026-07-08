@@ -108,6 +108,7 @@ function getCustomerDataDasarMerk() {
             }
 
             containerContent.html(rows);
+            activateOnClickBtnDetail();
             activateOnClickBtnDetailKatalog();
         }
     }).always(function (jqXHR, textStatus) {
