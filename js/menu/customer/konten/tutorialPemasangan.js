@@ -6,7 +6,7 @@ var baseURLPath             =   baseURL + "customer/konten/tutorialPemasangan/",
     sortableUrutan          =   null,
     arrUrutanTutorial       =   null;
 
-if (customerKontenTutorialPemasanganFunc === null) {
+if (customerKontenTutorialPemasanganFunc == null) {
     var customerKontenTutorialPemasanganFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(

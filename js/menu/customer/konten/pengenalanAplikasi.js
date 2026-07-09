@@ -10,7 +10,7 @@ var baseURLPath             =   baseURL + "customer/konten/pengenalanAplikasi/",
     sortableUrutan          =   null,
     arrUrutanSlide          =   null;
 
-if (customerKontenPengenalanAplikasiFunc === null) {
+if (customerKontenPengenalanAplikasiFunc == null) {
     var customerKontenPengenalanAplikasiFunc = function () {
         $(document).ready(function () {
             getCustomerKontenPengenalanAplikasi();

@@ -3,7 +3,7 @@ var baseURLPath     =   baseURL + "customer/dataDasar/kategoriProduk/",
     modalEditor     =   $('#customerDataDasarKategoriProduk-editor'),
     totalColumns    =   dataTableContent.closest('table').find('thead:first').find('th').length;
 
-if (customerDataDasarKategoriProdukFunc === null) {
+if (customerDataDasarKategoriProdukFunc == null) {
     var customerDataDasarKategoriProdukFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(

@@ -6,7 +6,7 @@ var baseURLPath         =   baseURL + "customer/konten/feed/",
     modalEditor         =   $('#customerKontenFeed-editor'),
     feedVideoContainer  =   $('#customerKontenFeed-feedContainer');
 
-if (customerKontenFeedFunc === null) {
+if (customerKontenFeedFunc == null) {
     var customerKontenFeedFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(

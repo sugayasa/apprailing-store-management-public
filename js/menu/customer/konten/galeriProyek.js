@@ -8,7 +8,7 @@ var baseURLPath         =   baseURL + "customer/konten/galeriProyek/",
                                 <p class="text-muted mb-0">Tidak ada data tersedia</p>\
                             </div>';
 
-if (customerKontenGaleriProyekFunc === null) {
+if (customerKontenGaleriProyekFunc == null) {
     var customerKontenGaleriProyekFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(

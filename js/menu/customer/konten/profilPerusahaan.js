@@ -6,7 +6,7 @@ var baseURLPath             =   baseURL + "customer/konten/profilPerusahaan/",
     sortableUrutan          =   null,
     arrUrutanProfil         =   null;
 
-if (customerKontenProfilPerusahaanFunc === null) {
+if (customerKontenProfilPerusahaanFunc == null) {
     var customerKontenProfilPerusahaanFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(

@@ -9,7 +9,7 @@ var baseURLPath                 =   baseURL + "customer/dataDasar/merk/",
                                         <p class="text-muted mb-0">Tidak ada data tersedia</p>\
                                     </div>';
 
-if (customerDataDasarMerkFunc === null) {
+if (customerDataDasarMerkFunc == null) {
     var customerDataDasarMerkFunc = function () {
         $(document).ready(function () {
             getCustomerDataDasarMerk();

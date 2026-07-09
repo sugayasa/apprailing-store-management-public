@@ -6,7 +6,7 @@ var baseURLPath         =   baseURL + "customer/dataDasar/levelLoyalti/",
                                 <p class="text-muted mb-0">Tidak ada data tersedia</p>\
                             </div>';
 
-if (customerDataDasarLevelLoyaltiFunc === null) {
+if (customerDataDasarLevelLoyaltiFunc == null) {
     var customerDataDasarLevelLoyaltiFunc = function () {
         $(document).ready(function () {
             getCustomerDataDasarLevelLoyalti();
