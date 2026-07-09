@@ -94,7 +94,7 @@ function loadLogin() {
                     beforeSend: function () {
                         Pace.start();
                         clearUserToken();
-                        toggleWindowLoader(true);
+                        $("#login-form").find("input, button").prop("disabled", true);
                     },
                     complete: function (jqXHR, textStatus) {
                         var responseJSON = jqXHR.responseJSON;
@@ -103,9 +103,9 @@ function loadLogin() {
                         });
                     },
                 }).always(function (jqXHR, textStatus) {
-                    toggleWindowLoader(false);
                     Pace.stop();
                     setUserToken(jqXHR, false, token);
+                    $("#login-form").find("input, button").prop("disabled", false);
                 });
             });
         },
