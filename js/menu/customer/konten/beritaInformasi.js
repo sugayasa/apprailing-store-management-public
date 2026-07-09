@@ -2,7 +2,7 @@ var baseURLPath     =   baseURL + "customer/konten/beritaInformasi/",
     dataTableContent=   $('#customerKontenBeritaInformasi-cardContent').find('table:first').find('tbody').first(),
     totalColumns    =   dataTableContent.closest('table').find('thead:first').find('th').length;
 
-if (customerKontenBeritaInformasiFunc == null) {
+if (customerKontenBeritaInformasiFunc === null) {
     var customerKontenBeritaInformasiFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(

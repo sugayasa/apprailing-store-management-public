@@ -6,7 +6,7 @@ var baseURLPath             =   baseURL + "customer/konten/profilPerusahaan/",
     sortableUrutan          =   null,
     arrUrutanProfil         =   null;
 
-if (customerKontenProfilPerusahaanFunc == null) {
+if (customerKontenProfilPerusahaanFunc === null) {
     var customerKontenProfilPerusahaanFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(
@@ -136,7 +136,11 @@ function getCustomerKontenProfilPerusahaan(pageNumber = 1) {
             activateOnClickBtnDetail();
 
             containerSortableUrutan.innerHTML   =   liSortableUrutan;
-            sortableUrutan                      =   Sortable.create(containerSortableUrutan);
+            
+            if (sortableUrutan) sortableUrutan.destroy();
+            if (typeof Sortable !== 'undefined') {
+                sortableUrutan                      =   Sortable.create(containerSortableUrutan);
+            }
             activateOnSubmitFormUrutanProfilPerusahaan();
         }
     }).always(function (jqXHR, textStatus) {

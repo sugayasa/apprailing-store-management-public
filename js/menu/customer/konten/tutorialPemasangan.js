@@ -6,7 +6,7 @@ var baseURLPath             =   baseURL + "customer/konten/tutorialPemasangan/",
     sortableUrutan          =   null,
     arrUrutanTutorial       =   null;
 
-if (customerKontenTutorialPemasanganFunc == null) {
+if (customerKontenTutorialPemasanganFunc === null) {
     var customerKontenTutorialPemasanganFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(
@@ -87,7 +87,8 @@ function getCustomerKontenTutorialPemasangan(pageNumber = 1) {
         },
         complete: function (jqXHR, textStatus) {
             var responseJSON    =   jqXHR.responseJSON,
-                liSortableUrutan=   rows    =   "";
+                liSortableUrutan=   "",
+                rows            =   "";
 
             switch (jqXHR.status) {
                 case 200:
@@ -135,7 +136,11 @@ function getCustomerKontenTutorialPemasangan(pageNumber = 1) {
             activateOnClickBtnDetail();
 
             containerSortableUrutan.innerHTML   =   liSortableUrutan;
-            sortableUrutan  =   Sortable.create(containerSortableUrutan);
+
+            if (sortableUrutan) sortableUrutan.destroy();
+            if (typeof Sortable !== 'undefined') {
+                sortableUrutan  =   Sortable.create(containerSortableUrutan);
+            }
             activateOnSubmitFormUrutanTutorial();
         }
     }).always(function (jqXHR, textStatus) {

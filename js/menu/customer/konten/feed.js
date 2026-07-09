@@ -6,7 +6,7 @@ var baseURLPath         =   baseURL + "customer/konten/feed/",
     modalEditor         =   $('#customerKontenFeed-editor'),
     feedVideoContainer  =   $('#customerKontenFeed-feedContainer');
 
-if (customerKontenFeedFunc == null) {
+if (customerKontenFeedFunc === null) {
     var customerKontenFeedFunc = function () {
         $(document).ready(function () {
             applyAutoResizeDocHeight(
@@ -58,7 +58,7 @@ var lastRowObserver = new IntersectionObserver(function(entries) {
     threshold: 0.1
 });
 
-var observeLastRow = function() {
+function observeLastRow() {
     lastRowObserver.disconnect();
     var lastRow = dataTableContent.find('tr:last');
     if (lastRow.length) {

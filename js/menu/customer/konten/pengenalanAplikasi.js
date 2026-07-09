@@ -10,7 +10,7 @@ var baseURLPath             =   baseURL + "customer/konten/pengenalanAplikasi/",
     sortableUrutan          =   null,
     arrUrutanSlide          =   null;
 
-if (customerKontenPengenalanAplikasiFunc == null) {
+if (customerKontenPengenalanAplikasiFunc === null) {
     var customerKontenPengenalanAplikasiFunc = function () {
         $(document).ready(function () {
             getCustomerKontenPengenalanAplikasi();
@@ -49,7 +49,8 @@ function getCustomerKontenPengenalanAplikasi() {
         },
         complete: function (jqXHR, textStatus) {
             var responseJSON    =   jqXHR.responseJSON,
-                liSortableUrutan=   rows    =   "";
+                liSortableUrutan=   "",
+                rows            =   "";
 
             switch (jqXHR.status) {
                 case 200:
@@ -107,7 +108,11 @@ function getCustomerKontenPengenalanAplikasi() {
             activateOnClickBtnDetail();
 
             containerSortableUrutan.innerHTML   =   liSortableUrutan;
-            sortableUrutan  =   Sortable.create(containerSortableUrutan);
+
+            if (sortableUrutan) sortableUrutan.destroy();
+            if (typeof Sortable !== 'undefined') {
+                sortableUrutan  =   Sortable.create(containerSortableUrutan);
+            }
             activateOnSubmitFormUrutanSlide();
         }
     }).always(function (jqXHR, textStatus) {
