@@ -921,6 +921,28 @@ function getYoutubeVideoId(url) {
     return videoId;
 }
 
+function confirmActionShowDialog(elemBodyConfirm, callback) {
+    $("#modal-confirm-action").on("show.bs.modal", function () {
+        $("#modal-confirm-body").html(elemBodyConfirm);
+    });
+    $("#modal-confirm-action").modal("show");
+
+    $("#modal-confirm-form").off("submit");
+    $("#modal-confirm-form").on("submit", function (e) {
+        if (typeof callback == "function") {
+            e.preventDefault();
+            let formData    =   $(this).serializeArray(),
+                dataSend    =   {};
+
+            $.each(formData, function (index, field) {
+                dataSend[field.name]  =   field.value;
+            });
+            callback(dataSend);
+        }
+        $("#modal-confirm-action").modal("hide");
+    });
+}
+
 window.onload = function () {
     history.pushState(null, null, window.location.href);
 
