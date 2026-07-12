@@ -789,7 +789,9 @@ function calculateRemainingHeightDoc(extraElementIds = []) {
 function applyAutoResizeDocHeight(selector, extraElementIds = []) {
     function recalculate() {
         var remaining = calculateRemainingHeightDoc(extraElementIds);
+        console.log("Remaining Height: " + remaining + "px");
         $(selector).css('height', remaining + 'px');
+        console.log("Applied Height to " + selector + ": " + remaining + "px");
     }
 
     recalculate();

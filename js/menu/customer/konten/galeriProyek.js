@@ -13,7 +13,7 @@ if (customerKontenGaleriProyekFunc == null) {
         $(document).ready(function () {
             applyAutoResizeDocHeight(
                 '#customerKontenGaleriProyek-content',
-                ['containerMenuCustomerKontenGaleriProyek', 'customerKontenGaleriProyek-hr']
+                ['customerKontenGaleriProyek-header', 'customerKontenGaleriProyek-hr']
             );
             getCustomerKontenGaleriProyek();
 
