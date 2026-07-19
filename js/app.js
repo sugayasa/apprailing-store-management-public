@@ -686,7 +686,6 @@ function createUploadFileInput(elemID, urlUpload, successCallback = false, error
                     }
                     break;
                 default:
-                    console.log(getMessageResponse(jqXHR));
                     generateWarningMessageResponse(jqXHR);
                     if (errorCallback && typeof errorCallback === 'function') {
                         errorCallback(files, data, jqXHR, pd);
@@ -698,11 +697,8 @@ function createUploadFileInput(elemID, urlUpload, successCallback = false, error
         },
         onError: function(files, status, errMsg, pd){
             toggleWindowLoader(false);
-            console.log("HTTP Status:", status);
-            console.log("Response:", errMsg);
             try {
                 var responseJSON = typeof errMsg === "string" ? JSON.parse(errMsg) : errMsg;
-                console.log(responseJSON);
                 generateWarningMessageResponse({responseJSON: responseJSON, messages: responseJSON.messages || responseJSON.message});
             } catch (e) {
                 $('#modalWarning').on('show.bs.modal', function() {
@@ -789,9 +785,7 @@ function calculateRemainingHeightDoc(extraElementIds = []) {
 function applyAutoResizeDocHeight(selector, extraElementIds = []) {
     function recalculate() {
         var remaining = calculateRemainingHeightDoc(extraElementIds);
-        console.log("Remaining Height: " + remaining + "px");
         $(selector).css('height', remaining + 'px');
-        console.log("Applied Height to " + selector + ": " + remaining + "px");
     }
 
     recalculate();
