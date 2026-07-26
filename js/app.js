@@ -1,4 +1,5 @@
 let tabId;
+var lastFocusElem = null;
 
 $(document).ready(function () {
 
@@ -837,6 +838,8 @@ function generatePagination(
             let selectedStr =   j == pageActive ? "selected" : "";
             comboBoxPageInfo+=  '<option value="' + j + '" ' + selectedStr + '>' + j + '</option>';
         }
+    } else {
+        comboBoxPageInfo+=  '<option value="1" selected>1</option>';
     }
 
     comboBoxPageInfo    +=  '</select>';
@@ -851,6 +854,11 @@ function generatePagination(
         }
     });
 }
+
+$(document).off('focus', 'input, select, textarea, radio, checkbox');
+$(document).on('focus', 'input, select, textarea, radio, checkbox', function() {
+    lastFocusElem   =   this;
+});
 
 function setElemDisabledProperty(arrElemIDClass, isDisabled = true) {
     if (!Array.isArray(arrElemIDClass)) {
@@ -871,6 +879,8 @@ function setElemDisabledProperty(arrElemIDClass, isDisabled = true) {
             }
         }
     });
+
+    if (!isDisabled && lastFocusElem) $(lastFocusElem).focus();
 }
 
 function toggleSlideContainer(leftContainer, rightContainer) {
