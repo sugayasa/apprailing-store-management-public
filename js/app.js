@@ -949,6 +949,13 @@ function confirmActionShowDialog(elemBodyConfirm, callback) {
     });
 }
 
+function formatDateYMDBootstrapDatePicker(date) {
+    let y   =   date.getFullYear();
+    let m   =   ('0' + (date.getMonth() + 1)).slice(-2);
+    let d   =   ('0' + date.getDate()).slice(-2);
+    return y + '-' + m + '-' + d;
+}
+
 window.onload = function () {
     history.pushState(null, null, window.location.href);
 
