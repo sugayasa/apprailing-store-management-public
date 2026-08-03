@@ -19,7 +19,7 @@ if (customerKontenGaleriProyekFunc == null) {
 
             $('#btnAddGaleriProyek').on('click', function() {
                 modalEditor
-                .find('input[name="idMerkUtama"]').val('').end()
+                .find('select[name="idMerkUtama"]').val('').end()
                 .find('input[name="namaKlien"]').val('').end()
                 .find('input[name="alamatProyek"]').val('').end()
                 .find('input[name="status"][value="1"]').prop('checked', true).end()
@@ -152,7 +152,7 @@ function activateOnClickGaleriProyek() {
 
         modalEditor.find("#galeriProyekImg").removeAttr('src').attr("src", imageGaleriProyekBaseUrl + image);
         modalEditor
-        .find('input[name="idMerkUtama"]').val(idMerkUtama).end()
+        .find('select[name="idMerkUtama"]').val(idMerkUtama).end()
         .find('input[name="namaKlien"]').val(namaKlien).end()
         .find('input[name="alamatProyek"]').val(alamatProyek).end()
         .find('input[name="status"][value="' + parseInt(status) + '"]').prop('checked', true).end()
