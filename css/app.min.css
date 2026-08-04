@@ -2023,6 +2023,9 @@ progress {
             var(--bs-table-bg-type, var(--bs-table-accent-bg))
         );
 }
+.table > tbody > tr:last-child > td {
+    border-bottom-width: 0;
+}
 .table > tbody {
     vertical-align: inherit;
 }
