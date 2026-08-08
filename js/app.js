@@ -949,11 +949,29 @@ function confirmActionShowDialog(elemBodyConfirm, callback) {
     });
 }
 
-function formatDateYMDBootstrapDatePicker(date) {
+function formatDateYMDBootstrapDatePicker(date, format = 'YYYY-MM-DD') {
     let y   =   date.getFullYear();
     let m   =   ('0' + (date.getMonth() + 1)).slice(-2);
     let d   =   ('0' + date.getDate()).slice(-2);
-    return y + '-' + m + '-' + d;
+    let returnFormat    =   y + '-' + m + '-' + d;
+
+    switch (format) {
+        case 'YYYY-MM':
+            returnFormat    =   y + '-' + m;
+            break;
+        case 'DD-MM-YYYY':
+            returnFormat    =   d + '-' + m + '-' + y;
+            break;
+        case 'MM-DD-YYYY':
+            returnFormat    =   m + '-' + d + '-' + y;
+            break;
+        default:
+            returnFormat    =   y + '-' + m + '-' + d;
+            break;
+    }
+
+
+    return returnFormat;
 }
 
 window.onload = function () {

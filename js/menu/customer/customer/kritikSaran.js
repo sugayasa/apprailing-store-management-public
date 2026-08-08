@@ -28,6 +28,8 @@ if (customerKritikSaranFunc == null) {
             language: 'id',
             todayHighlight: true,
             toggleActive: true
+        }).on('changeDate', function (e) {
+            getCustomerKritikSaran();
         });
 
         var today       =   new Date();
@@ -36,9 +38,6 @@ if (customerKritikSaranFunc == null) {
 
         $('#customerKritikSaran-rentangTanggal input[name="tanggalAwal"]').datepicker('setDate', sixtyDaysAgo);
         $('#customerKritikSaran-rentangTanggal input[name="tanggalAkhir"]').datepicker('setDate', today);
-        $('#customerKritikSaran-rentangTanggal input[name="tanggalAwal"], #customerKritikSaran-rentangTanggal input[name="tanggalAkhir"]').on('change', function () {
-            getCustomerKritikSaran();
-        });
     }
 }
 

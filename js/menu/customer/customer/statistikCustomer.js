@@ -25,6 +25,8 @@ if (customerStatistikCustomerFunc == null) {
             language: 'id',
             todayHighlight: true,
             toggleActive: true
+        }).on('changeDate', function (e) {
+            getCustomerStatistikCustomer();
         });
 
         var today           =   new Date();
@@ -33,9 +35,6 @@ if (customerStatistikCustomerFunc == null) {
 
         $('#customerStatistikCustomer-rentangTanggal input[name="tanggalAwal"]').datepicker('setDate', thirtyDaysAgo);
         $('#customerStatistikCustomer-rentangTanggal input[name="tanggalAkhir"]').datepicker('setDate', today);
-        $('#customerStatistikCustomer-rentangTanggal input[name="tanggalAwal"], #customerStatistikCustomer-rentangTanggal input[name="tanggalAkhir"]').on('change', function () {
-            getCustomerStatistikCustomer();
-        });
     }
 }
 
