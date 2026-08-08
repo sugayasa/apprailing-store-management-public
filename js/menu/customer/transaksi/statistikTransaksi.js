@@ -133,7 +133,7 @@ function renderRekapPerMerk(dataRekapPerMerk, urlAssetLogoMerk) {
                                         <img src="'+ urlAssetLogoMerk + detailMerk.LOGO+'" class="img-fluid" style="max-height: 44px; max-width: 44px;">\
                                     </span>\
                                     <div class="ms-3 flex-grow-1">\
-                                        <div class="fw-600 text-body">' + detailMerk.TOTALTRANSAKSI + ' Transaksi</div>\
+                                        <div class="fw-600 text-body d-flex">' + detailMerk.NAMAMERK + ' <span class="text-muted ms-auto">[' + detailMerk.TOTALTRANSAKSI + ' Transaksi]</span></div>\
                                         <div class="fs-13px">Total Nominal : Rp. '+ numberFormat(detailMerk.TOTALTRANSAKSINOMINAL) +'</div>\
                                     </div>\
                                 </div>';
