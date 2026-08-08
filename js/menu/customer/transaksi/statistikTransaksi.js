@@ -128,10 +128,10 @@ function renderRekapPerMerk(dataRekapPerMerk, urlAssetLogoMerk) {
 
     if(dataRekapPerMerk && dataRekapPerMerk.length > 0){
         $.each(dataRekapPerMerk, function (index, detailMerk) {
-            rowRekapPerMerk +=  '<div class="d-flex align-items-justify mb-3">\
-                                    <div class="w-160px h-40px">\
-                                        <img src="'+ urlAssetLogoMerk + detailMerk.LOGO+'" alt="" class="ms-100 mh-100">\
-                                    </div>\
+            rowRekapPerMerk +=  '<div class="d-flex align-items-justify mb-2">\
+                                    <span class="rounded-circle d-inline-flex align-items-center justify-content-center me-2 flex-shrink-0" style="width: 50px; height: 50px; background-color: #2D2D2D;">\
+                                        <img src="'+ urlAssetLogoMerk + detailMerk.LOGO+'" class="img-fluid" style="max-height: 44px; max-width: 44px;">\
+                                    </span>\
                                     <div class="ms-3 flex-grow-1">\
                                         <div class="fw-600 text-body">' + detailMerk.TOTALTRANSAKSI + ' Transaksi</div>\
                                         <div class="fs-13px">Total Nominal : Rp. '+ numberFormat(detailMerk.TOTALTRANSAKSINOMINAL) +'</div>\
