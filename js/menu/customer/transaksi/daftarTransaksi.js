@@ -67,7 +67,7 @@ function generateDataTable(pageNumber){
 }
 
 function getCustomerDataTransaksi(pageNumber = 1) {
-    let optionRegional  =   $('#customerDaftarTransaksi-optionRegional').val(),
+    let idRegional      =   $('#customerDaftarTransaksi-optionRegional').val(),
         tanggalAwalVal  =   $('#customerDaftarTransaksi-rentangTanggal input[name="tanggalAwal"]').datepicker('getDate'),
         tanggalAkhirVal =   $('#customerDaftarTransaksi-rentangTanggal input[name="tanggalAkhir"]').datepicker('getDate'),
         tanggalAwal     =   tanggalAwalVal ? formatDateYMDBootstrapDatePicker(tanggalAwalVal) : '',
@@ -75,7 +75,7 @@ function getCustomerDataTransaksi(pageNumber = 1) {
         searchKeyword   =   $('#customerDaftarTransaksi-searchKeyword').val(),
         dataSend        =   {
             searchKeyword: searchKeyword,
-            optionRegional: optionRegional,
+            idRegional: idRegional,
             tanggalAwal: tanggalAwal,
             tanggalAkhir: tanggalAkhir,
             pageNumber: pageNumber
