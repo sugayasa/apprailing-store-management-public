@@ -249,7 +249,7 @@ function activateOnClickRowData() {
                                                         '+numberFormat(arrayData.NOMINALSATUAN)+' x '+arrayData.JUMLAH+'\
                                                     </div>\
                                                     <div class="col-lg-2 m-0 text-end">\
-                                                        '+numberFormat(arrayData.NOMINALTOTAL)+'\
+                                                        Rp. '+numberFormat(arrayData.NOMINALTOTAL)+'\
                                                     </div>\
                                                 </div>';
                                 totalPcs    +=  parseInt(arrayData.JUMLAH);
