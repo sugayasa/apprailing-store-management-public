@@ -216,7 +216,6 @@ function activateOnClickRowData() {
                         $(prefixElemDetail + 'tagAlamat').text(': ' + detailData.ALAMATNAMA);
                         $(prefixElemDetail + 'namaTelponCustomer').text(detailData.PENERIMANAMA+' ('+detailData.PENERIMANOMORTELEPON+')');
                         $(prefixElemDetail + 'alamatPengiriman').text(detailData.ALAMATKIRIM);
-                        $(prefixElemDetail + 'totalProduk').text(numberFormat(detailData.TOTALBARANG));
                         $(prefixElemDetail + 'totalHargaProduk').text(numberFormat(detailData.TOTALNOMINALBARANG));
                         $(prefixElemDetail + 'ongkosKirim').text(numberFormat(detailData.TOTALNOMINALONGKIR));
                         $(prefixElemDetail + 'diskon').text(numberFormat(detailData.TOTALNOMINALDISKON));
@@ -263,7 +262,10 @@ function activateOnClickRowData() {
                                 </div>'
                             );
                         }
+
+                        $(prefixElemDetail + 'totalProduk').text(numberFormat(detailData.TOTALBARANG));
                         $(prefixElemDetail + 'totalPcs').text(numberFormat(totalPcs));
+                        $(prefixElemDetail + 'namaEkspedisi').text(detailData.NAMAEKSPEDISI);
 
                         toggleSlideContainerDaftarTransaksi();
                         toggleDisplayTopButton(false);
