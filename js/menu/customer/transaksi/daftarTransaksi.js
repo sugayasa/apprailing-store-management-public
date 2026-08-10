@@ -168,7 +168,118 @@ function getCustomerDataTransaksi(pageNumber = 1) {
 }
 
 function activateOnClickRowData() {
+    $('.dataTransaksi-row').off('click');
+    $('.dataTransaksi-row').on('click', function() {
+        let idTransaksiRekap=   $(this).data('id'),
+            dataSend        =   {
+                idTransaksiRekap: idTransaksiRekap
+            };
 
+        $.ajax({
+            type: 'POST',
+            url: baseURLPath + "getDetail",
+            contentType: 'application/json',
+            dataType: 'json',
+            cache: false,
+            data: mergeDataSend(dataSend),
+            xhrFields: {withCredentials: true},
+            headers: {Authorization: "Bearer " + getUserToken()},
+            beforeSend: function () {
+                Pace.start();
+                toggleWindowLoader(true);
+            },
+            complete: function (jqXHR, textStatus) {
+                var responseJSON=   jqXHR.responseJSON;
+
+                switch (jqXHR.status) {
+                    case 200:
+                        let detailData      =   responseJSON.detailData,
+                            daftarProduk    =   responseJSON.daftarProduk,
+                            prefixElemDetail=   '#detailTransaksi-',
+                            totalPcs        =   0;
+
+                        $(prefixElemDetail + 'avatar').attr('src', baseUrlCustomerAvatar + detailData.AVATAR);
+                        $(prefixElemDetail + 'namaCustomer').text(detailData.NAMA);
+                        $(prefixElemDetail + 'kodeCustomer').text(detailData.KODECUSTOMER);
+                        $(prefixElemDetail + 'emailCustomer').text(detailData.EMAIL);
+                        $(prefixElemDetail + 'telpCustomer').text(detailData.NOMORHP);
+                        $(prefixElemDetail + 'levelLoyaltiCustomerIcon').attr('src', baseUrlIconLevelLoyalti + detailData.ICONFILELOYALTI);
+                        $(prefixElemDetail + 'levelLoyaltiCustomer').text(detailData.LOYALTITIER);
+                        $(prefixElemDetail + 'kode').text(detailData.NOMORTRANSAKSI);
+                        $(prefixElemDetail + 'statusTransaksi').html('<span class="badge bg-' + detailData.COLORCLASSBS + ' bg-opacity-20 text-' + detailData.COLORCLASSBS + '">' + detailData.STATUSTRANSAKSI + '</span>');
+                        $(prefixElemDetail + 'tanggalWaktu').text(detailData.INPUTTANGGALWAKTUSTR);
+                        $(prefixElemDetail + 'regional').text(detailData.NAMAREGIONAL);
+                        $(prefixElemDetail + 'metodePembayaran').text(detailData.NAMAKANALPEMBAYARAN);
+                        $(prefixElemDetail + 'catatan').text(detailData.CATATAN);
+                        $(prefixElemDetail + 'ekspedisi').text(': ' + detailData.NAMAEKSPEDISI);
+                        $(prefixElemDetail + 'noResi').text(': ' + detailData.NOMORRESIEKSPEDISI);
+                        $(prefixElemDetail + 'tagAlamat').text(': ' + detailData.ALAMATNAMA);
+                        $(prefixElemDetail + 'namaTelponCustomer').text(detailData.PENERIMANAMA+' ('+detailData.PENERIMANOMORTELEPON+')');
+                        $(prefixElemDetail + 'alamatPengiriman').text(detailData.ALAMATKIRIM);
+                        $(prefixElemDetail + 'totalProduk').text(numberFormat(detailData.TOTALBARANG));
+                        $(prefixElemDetail + 'totalHargaProduk').text(numberFormat(detailData.TOTALNOMINALBARANG));
+                        $(prefixElemDetail + 'ongkosKirim').text(numberFormat(detailData.TOTALNOMINALONGKIR));
+                        $(prefixElemDetail + 'diskon').text(numberFormat(detailData.TOTALNOMINALDISKON));
+                        $(prefixElemDetail + 'totalBayar').text(numberFormat(detailData.TOTALNOMINALBAYAR));
+
+                        if (daftarProduk.length > 0) {
+                            let rowsProduk  =   "";
+                            $.each(daftarProduk, function (index, arrayData) {
+                                let arrImageProduk  =   JSON.parse(arrayData.ARRIMAGE) ? JSON.parse(arrayData.ARRIMAGE) : [],
+                                    imageProduk     =   arrImageProduk && arrImageProduk.length > 0 ? arrImageProduk[0] : 'default.png';
+
+                                if(index != 0) rowsProduk  +=  '<hr class="opacity-1 my-3">';
+                                rowsProduk  +=  '<div class="row align-items-center">\
+                                                    <div class="col-lg-8 d-flex align-items-center">\
+                                                        <div class="h-65px w-65px d-flex align-items-center justify-content-center position-relative bg-body rounded">\
+                                                            <img src="'+baseUrlCustomerProduk+imageProduk+'" class="mw-100 mh-100 rounded">\
+                                                            <span class="w-20px h-20px p-0 d-flex align-items-center justify-content-center badge bg-theme text-theme-color position-absolute end-0 top-0 fw-bold fs-12px rounded-pill mt-n2 me-n2">'+arrayData.JUMLAH+'</span>\
+                                                        </div>\
+                                                        <div class="ps-3 flex-1">\
+                                                            <div class="text-decoration-none text-body">'+arrayData.NAMAPRODUK+'</div>\
+                                                            <div class="text-body text-opacity-50 small">\
+                                                                '+arrayData.NAMAMERK+' - '+arrayData.NAMAKATEGORI+'\
+                                                            </div>\
+                                                            <div class="text-body text-opacity-50 small">\
+                                                                '+arrayData.KETERANGAN+'\
+                                                            </div>\
+                                                        </div>\
+                                                    </div>\
+                                                    <div class="col-lg-2 m-0 ps-lg-3">\
+                                                        '+numberFormat(arrayData.NOMINALSATUAN)+' x '+arrayData.JUMLAH+'\
+                                                    </div>\
+                                                    <div class="col-lg-2 m-0 text-end">\
+                                                        '+numberFormat(arrayData.NOMINALTOTAL)+'\
+                                                    </div>\
+                                                </div>';
+                                totalPcs    +=  parseInt(arrayData.JUMLAH);
+                            });
+                            $(prefixElemDetail + 'daftarProdukContainer').html(rowsProduk);
+                        } else {
+                            $(prefixElemDetail + 'daftarProdukContainer').html(
+                                '<div class="text-center py-4">\
+                                    <i class="fa fa-inbox fa-3x text-muted mb-3"></i>\
+                                    <p class="text-muted mb-0">Tidak ada data tersedia</p>\
+                                </div>'
+                            );
+                        }
+                        $(prefixElemDetail + 'totalPcs').text(numberFormat(totalPcs));
+
+                        toggleSlideContainerDaftarTransaksi();
+                        toggleDisplayTopButton(false);
+                        break;
+                    case 404:
+                    default:
+                        generateWarningMessageResponse(jqXHR);
+                        break;
+                }
+            }
+        }).always(function (jqXHR, textStatus) {
+            Pace.stop();
+            setUserToken(jqXHR);
+            toggleWindowLoader(false);
+        });        
+    });
 }
 
 customerDaftarTransaksiFunc();
