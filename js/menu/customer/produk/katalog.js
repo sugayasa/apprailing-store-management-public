@@ -20,17 +20,7 @@ if (customerProdukKatalogFunc == null) {
 
             setOptionHelper('optionMerk', 'dataCustomerMerk');
             setOptionHelper('optionKategori', 'dataCustomerKategori');
-
-            containerContent.on('scroll', function() {
-                var el = this;
-                if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
-                    if(currentPageNumber < totalPageNumber){
-                        currentPageNumber++;
-                        getDataProdukKatalog(currentPageNumber);
-                    }
-                }
-            });
-
+            activateOnScrollPagination();
             getDataProdukKatalog();
 
             $('#btnAddProduk').on('click', function() {
@@ -76,6 +66,19 @@ if (customerProdukKatalogFunc == null) {
             });
         });
     }
+}
+
+function activateOnScrollPagination() {
+    containerContent.on('scroll', function() {
+        var el = this;
+        if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
+            if(currentPageNumber < totalPageNumber){
+                currentPageNumber++;
+                containerContent.off('scroll');
+                getDataProdukKatalog(currentPageNumber);
+            }
+        }
+    });
 }
 
 function toggleSlideContainerProduk() {
@@ -204,8 +207,8 @@ var generateSummernoteDeskripsi    =   function() {
     });
 };
 
-$('#customerProdukKatalog-optionMerk, #customerProdukKatalog-optionKategori, #customerProdukKatalog-optionUrutBerdasar, #customerProdukKatalog-optionJenisUrutan').off('change');
-$('#customerProdukKatalog-optionMerk, #customerProdukKatalog-optionKategori, #customerProdukKatalog-optionUrutBerdasar, #customerProdukKatalog-optionJenisUrutan').on('change', function (e) {
+$('#customerProdukKatalog-optionMerk, #customerProdukKatalog-optionKategori, #customerProdukKatalog-optionStatus, #customerProdukKatalog-optionUrutBerdasar, #customerProdukKatalog-optionJenisUrutan').off('change');
+$('#customerProdukKatalog-optionMerk, #customerProdukKatalog-optionKategori, #customerProdukKatalog-optionStatus, #customerProdukKatalog-optionUrutBerdasar, #customerProdukKatalog-optionJenisUrutan').on('change', function (e) {
     getDataProdukKatalog();
 });
 
@@ -219,6 +222,7 @@ $("#customerProdukKatalog-keywordCariProduk").on('keypress', function (e) {
 function getDataProdukKatalog(pageNumber = 1) {
     var merk            =   $('#customerProdukKatalog-optionMerk').val(),
         kategori        =   $('#customerProdukKatalog-optionKategori').val(),
+        status          =   $('#customerProdukKatalog-optionStatus').val(),
         urutBerdasar    =   $('#customerProdukKatalog-optionUrutBerdasar').val(),
         jenisUrutan     =   $('#customerProdukKatalog-optionJenisUrutan').val(),
         keywordCari     =   $('#customerProdukKatalog-keywordCariProduk').val(),
@@ -226,6 +230,7 @@ function getDataProdukKatalog(pageNumber = 1) {
             pageNumber:pageNumber,
             merk: merk,
             kategori: kategori,
+            status: status,
             urutBerdasar: urutBerdasar,
             jenisUrutan: jenisUrutan,
             keywordCari: keywordCari
@@ -246,6 +251,17 @@ function getDataProdukKatalog(pageNumber = 1) {
                 currentPageNumber   =   1;
                 containerContent.html(loaderElem);
             }
+            setElemDisabledProperty(
+                [
+                    '#customerProdukKatalog-optionMerk',
+                    '#customerProdukKatalog-optionKategori',
+                    '#customerProdukKatalog-optionStatus',
+                    '#customerProdukKatalog-optionUrutBerdasar',
+                    '#customerProdukKatalog-optionJenisUrutan',
+                    '#customerProdukKatalog-keywordCariProduk'
+                ],
+                true
+            );
         },
         complete: function (jqXHR, textStatus) {
             var responseJSON=   jqXHR.responseJSON,
@@ -259,15 +275,21 @@ function getDataProdukKatalog(pageNumber = 1) {
                     totalPageNumber =   pageProperty.pageTotal;
 
                     $.each(listData, function (index, arrayData) {
-                        let image1Produk    =   imageProdukBaseUrl + (JSON.parse(arrayData.ARRIMAGE)[0]) ?? imageProdukDefault;
+                        let image1Produk    =   imageProdukBaseUrl + (JSON.parse(arrayData.ARRIMAGE)[0]) ?? imageProdukDefault,
+                            badgeStatus     =   (arrayData.STATUS == 1) ? 
+                                                '<span><i class="far fa-check-circle text-success fa-fw fa-lg"></i> Aktif</span>' : 
+                                                '<span><i class="far fa-times-circle text-danger fa-fw fa-lg"></i> Non Aktif</span>';
                         rows += '<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pb-3">\
                                     <div class="pos-product">\
                                         <div class="img" style="background-image: url(' + image1Produk +')"></div>\
                                         <div class="info">\
                                             <div class="title text-truncate">' + arrayData.NAMAPRODUK +'</div>\
                                             <div class="text-truncate mb-1">' + arrayData.NAMAMERK + ' - '+ arrayData.NAMAKATEGORI +'</div>\
-                                            <div class="desc text-truncate">' + arrayData.DESKRIPSI +'</div>\
-                                            <div class="price">Rp ' + numberFormat(arrayData.HARGAJUAL) +'</div>\
+                                            <div class="desc text-truncate mb-1">' + arrayData.DESKRIPSI +'</div>\
+                                            <div class="d-flex justify-content-between align-items-center">\
+                                                ' + badgeStatus + '\
+                                                <div class="price">Rp ' + numberFormat(arrayData.HARGAJUAL) +'</div>\
+                                            </div>\
                                             <div class="mt-3">\
                                                 <span class="btn btn-theme btn-detail fw-semibold d-block mb-0" data-id="' + arrayData.IDPRODUK + '">Detail</span>\
                                             </div>\
@@ -295,6 +317,18 @@ function getDataProdukKatalog(pageNumber = 1) {
         Pace.stop();
         setUserToken(jqXHR);
         $("#loaderElem").remove();
+        activateOnScrollPagination();
+        setElemDisabledProperty(
+            [
+                '#customerProdukKatalog-optionMerk',
+                '#customerProdukKatalog-optionKategori',
+                '#customerProdukKatalog-optionStatus',
+                '#customerProdukKatalog-optionUrutBerdasar',
+                '#customerProdukKatalog-optionJenisUrutan',
+                '#customerProdukKatalog-keywordCariProduk'
+            ],
+            false
+        );
     });
 }
 
