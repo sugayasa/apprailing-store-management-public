@@ -9,13 +9,24 @@ if (pengaturanVariabelSistemFunc == null) {
                 ['pengaturanVariabelSistem-header', 'pengaturanVariabelSistem-hr', 'pengaturanVariabelSistem-tabPills']
             );
 
-            $('.pengaturanVariabelSistem-tabPills a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $('#pengaturanVariabelSistem-tabPills').find('a[data-bs-toggle="pill"]')
+            .off('click').on('click', function (e) {
                 var targetTab   =   $(e.target).attr('href');
-                
+
                 switch (targetTab) {
+                    case '#pills-pengaturan-sistem':
+                        getDataPengaturanSistem();
+                        break;
                     case '#pills-barang-sistem-utama':
                         getDataVariabelSistemBarangSistemUtama();
                         break;
+                }
+            });
+
+            $('#pengaturanSistem-searchKeyword').off('keypress');
+            $("#pengaturanSistem-searchKeyword").on('keypress', function (e) {
+                if (e.which == 13) {
+                    getDataPengaturanSistem();
                 }
             });
 
@@ -30,9 +41,95 @@ if (pengaturanVariabelSistemFunc == null) {
                 }
             });
 
-            getDataVariabelSistemBarangSistemUtama();
+            getDataPengaturanSistem();
         });
     }
+}
+
+function getDataPengaturanSistem() {
+    let dataTableContent=   $('#pills-pengaturan-sistem').find('table tbody'),
+        searchKeyword   =   $('#pengaturanSistem-searchKeyword').val(),
+        dataSend        =   {
+            searchKeyword: searchKeyword
+        };
+    $.ajax({
+        type: 'POST',
+        url: baseURLPath + "getRowPengaturanSistem",
+        contentType: 'application/json',
+        dataType: 'json',
+        cache: false,
+        data: mergeDataSend(dataSend),
+        xhrFields: {withCredentials: true},
+        headers: {Authorization: "Bearer " + getUserToken()},
+        beforeSend: function () {
+            Pace.start();
+            setElemDisabledProperty(['#btnSimpanPengaturanSistem', '#pengaturanSistem-searchKeyword'], true);
+            dataTableContent.html("<tr><td class='text-center border-bottom-0'>" + loaderElem + "</td></tr>");
+        },
+        complete: function (jqXHR, textStatus) {
+            var responseJSON=   jqXHR.responseJSON,
+                rows        =   "";
+
+            switch (jqXHR.status) {
+                case 200:
+                    rows    =   responseJSON.rowPengaturan;
+                    break;
+                case 404:
+                default:
+                    rows    =   '<tr><td class="text-center">'+getMessageResponse(jqXHR)+'</td></tr>';
+                    break;
+            }
+
+            dataTableContent.html(rows);
+            setElemDisabledProperty(['#btnSimpanPengaturanSistem', '#pengaturanSistem-searchKeyword'], false);
+            activateOnclickBtnSimpanPengaturanSistem();
+        }
+    }).always(function (jqXHR, textStatus) {
+        Pace.stop();
+        setUserToken(jqXHR);
+    });
+}
+
+function activateOnclickBtnSimpanPengaturanSistem() {
+    $('#btnSimpanPengaturanSistem').off('click').on('click', function () {
+        let dataSend    =   {
+            dataPengaturan  :   []
+        };
+
+        $('.pengaturan-sistem-input').each(function () {
+            let inputElem       =   $(this),
+                idPengaturan    =   inputElem.closest('tr').data('id-pengaturan'),
+                valuePengaturan =   inputElem.val();
+
+            dataSend.dataPengaturan.push({
+                idPengaturan:   idPengaturan,
+                valuePengaturan:  valuePengaturan
+            });
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: baseURLPath + "simpanPengaturanSistem",
+            contentType: 'application/json',
+            dataType: 'json',
+            cache: false,
+            data: mergeDataSend(dataSend),
+            xhrFields: {withCredentials: true},
+            headers: {Authorization: "Bearer " + getUserToken()},
+            beforeSend: function () {
+                Pace.start();
+                toggleWindowLoader(true);
+            },
+            complete: function (jqXHR, textStatus) {
+                if (jqXHR.status === 200) toastMessage("success", getMessageResponse(jqXHR));
+                if (jqXHR.status !== 200) generateWarningMessageResponse(jqXHR);
+            }
+        }).always(function (jqXHR, textStatus) {
+            toggleWindowLoader(false);
+            Pace.stop();
+            setUserToken(jqXHR);
+        });
+    });
 }
 
 function syncDataBarangSistemUtama() {
@@ -51,12 +148,13 @@ function syncDataBarangSistemUtama() {
         },
         complete: function (jqXHR, textStatus) {
             if (jqXHR.status === 200) {
+                toastMessage("success", getMessageResponse(jqXHR));
                 getDataVariabelSistemBarangSistemUtama();
             }
-            toastMessage("success", getMessageResponse(jqXHR));
-            toggleWindowLoader(false);
+            if (jqXHR.status !== 200) generateWarningMessageResponse(jqXHR);
         }
     }).always(function (jqXHR, textStatus) {
+        toggleWindowLoader(false);
         Pace.stop();
         setUserToken(jqXHR);
     });
