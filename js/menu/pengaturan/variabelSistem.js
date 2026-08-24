@@ -20,6 +20,9 @@ if (pengaturanVariabelSistemFunc == null) {
                     case '#pills-barang-sistem-utama':
                         getDataVariabelSistemBarangSistemUtama();
                         break;
+                    case '#pills-wilayah-ongkir':
+                        getDataVariabelSistemWilayahOngkir();
+                        break;
                 }
             });
 
@@ -38,6 +41,17 @@ if (pengaturanVariabelSistemFunc == null) {
             $("#dataBarangSistemUtama-searchKeyword").on('keypress', function (e) {
                 if (e.which == 13) {
                     getDataVariabelSistemBarangSistemUtama();
+                }
+            });
+
+            $('#btnSyncDataWilayahOngkir').on('click', function() {
+                syncDataWilayahOngkir();
+            });
+
+            $('#dataWilayahOngkir-searchKeywordProvinsi, #dataWilayahOngkir-searchKeywordKotaKabupaten, #dataWilayahOngkir-searchKeyword').off('keypress');
+            $("#dataWilayahOngkir-searchKeywordProvinsi, #dataWilayahOngkir-searchKeywordKotaKabupaten, #dataWilayahOngkir-searchKeyword").on('keypress', function (e) {
+                if (e.which == 13) {
+                    getDataVariabelSistemWilayahOngkir();
                 }
             });
 
@@ -214,6 +228,106 @@ function getDataVariabelSistemBarangSistemUtama(pageNumber = 1) {
             dataTableContent.html(rows);
             setElemDisabledProperty(['.paginationElem', '#btnSyncDataBarangSistemUtama', '#dataBarangSistemUtama-searchKeyword'], false);
             generatePagination('dataBarangSistemUtama-paginationInfo', 'dataBarangSistemUtama-paginationControl', pageNumber, responseJSON.pageProperty, 'comboBoxPagination-dataBarangSistemUtama', 'generateDataTableBarangSistemUtama');
+        }
+    }).always(function (jqXHR, textStatus) {
+        Pace.stop();
+        setUserToken(jqXHR);
+    });
+}
+
+function syncDataWilayahOngkir() {
+    $.ajax({
+        type: 'POST',
+        url: baseURLPath + "syncDataWilayahOngkir",
+        contentType: 'application/json',
+        dataType: 'json',
+        cache: false,
+        data: mergeDataSend({}),
+        xhrFields: {withCredentials: true},
+        headers: {Authorization: "Bearer " + getUserToken()},
+        beforeSend: function () {
+            Pace.start();
+            toggleWindowLoader(true);
+        },
+        complete: function (jqXHR, textStatus) {
+            if (jqXHR.status === 200) {
+                toastMessage("success", getMessageResponse(jqXHR));
+                getDataVariabelSistemWilayahOngkir();
+            }
+            if (jqXHR.status !== 200) generateWarningMessageResponse(jqXHR);
+        }
+    }).always(function (jqXHR, textStatus) {
+        toggleWindowLoader(false);
+        Pace.stop();
+        setUserToken(jqXHR);
+    });
+}
+
+function generateDataTableWilayahOngkir(pageNumber){
+    getDataVariabelSistemWilayahOngkir(pageNumber);
+}
+
+function getDataVariabelSistemWilayahOngkir(pageNumber = 1) {
+    let dataTableContent    =   $('#dataWilayahOngkir-table tbody'),
+        totalColumns        =   $('#dataWilayahOngkir-table thead tr th').length,
+        keywordProvinsi     =   $('#dataWilayahOngkir-searchKeywordProvinsi').val(),
+        keywordKotaKabupaten=   $('#dataWilayahOngkir-searchKeywordKotaKabupaten').val(),
+        keyword             =   $('#dataWilayahOngkir-searchKeyword').val(),
+        dataSend            =   {
+            keywordProvinsi: keywordProvinsi,
+            keywordKotaKabupaten: keywordKotaKabupaten,
+            searchKeyword: keyword,
+            pageNumber: pageNumber,
+            dataPerPage: 25
+        };
+    $.ajax({
+        type: 'POST',
+        url: baseURLPath + "getDataWilayahOngkir",
+        contentType: 'application/json',
+        dataType: 'json',
+        cache: false,
+        data: mergeDataSend(dataSend),
+        xhrFields: {withCredentials: true},
+        headers: {Authorization: "Bearer " + getUserToken()},
+        beforeSend: function () {
+            Pace.start();
+            setElemDisabledProperty(['.paginationElem', '#btnSyncDataWilayahOngkir', '#dataWilayahOngkir-searchKeyword'], true);
+            dataTableContent.html("<tr><td colspan='" + totalColumns + "' class='text-center border-bottom-0'>" + loaderElem + "</td></tr>");
+        },
+        complete: function (jqXHR, textStatus) {
+            var responseJSON=   jqXHR.responseJSON,
+                rows        =   "";
+
+            switch (jqXHR.status) {
+                case 200:
+                    let listData    =   responseJSON.listData;
+
+                    $.each(listData, function (index, arrayData) {
+                        rows    +=  '<tr>\
+                                        <td class="text-break">\
+                                            ' + arrayData.NAMAPROVINSI + '\
+                                            <p class="text-muted">Kode API :' + arrayData.KODEAPIPROVINSI + '</p>\
+                                        </td>\
+                                        <td class="text-break">\
+                                            ' + arrayData.NAMAKOTAKABUPATEN + '\
+                                            <p class="text-muted">Kode API :' + arrayData.KODEAPIKOTAKABUPATEN + '</p>\
+                                        </td>\
+                                        <td class="text-break">\
+                                            ' + arrayData.NAMAKECAMATAN + '\
+                                            <p class="text-muted">Kode API :' + arrayData.KODEAPIKECAMATAN + '</p>\
+                                        </td>\
+                                    </tr>';
+                    });
+                    break;
+                case 404:
+                default:
+                    rows    =   '<tr><td colspan="'+totalColumns+'" class="text-center">'+getMessageResponse(jqXHR)+'</td></tr>';
+                    break;
+            }
+
+            dataTableContent.html(rows);
+            setElemDisabledProperty(['.paginationElem', '#btnSyncDataWilayahOngkir', '#dataWilayahOngkir-searchKeyword'], false);
+            generatePagination('dataWilayahOngkir-paginationInfo', 'dataWilayahOngkir-paginationControl', pageNumber, responseJSON.pageProperty, 'comboBoxPagination-dataWilayahOngkir', 'generateDataTableWilayahOngkir');
         }
     }).always(function (jqXHR, textStatus) {
         Pace.stop();
