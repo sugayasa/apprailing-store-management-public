@@ -278,7 +278,7 @@ function getDataVariabelSistemWilayahOngkir(pageNumber = 1) {
             keywordKotaKabupaten: keywordKotaKabupaten,
             searchKeyword: keyword,
             pageNumber: pageNumber,
-            dataPerPage: 25
+            dataPerPage: 50
         };
     $.ajax({
         type: 'POST',
@@ -306,15 +306,15 @@ function getDataVariabelSistemWilayahOngkir(pageNumber = 1) {
                         rows    +=  '<tr>\
                                         <td class="text-break">\
                                             ' + arrayData.NAMAPROVINSI + '\
-                                            <p class="text-muted">Kode API :' + arrayData.KODEAPIPROVINSI + '</p>\
+                                            <p class="text-muted mb-0">Kode API :' + arrayData.KODEAPIPROVINSI + '</p>\
                                         </td>\
                                         <td class="text-break">\
                                             ' + arrayData.NAMAKOTAKABUPATEN + '\
-                                            <p class="text-muted">Kode API :' + arrayData.KODEAPIKOTAKABUPATEN + '</p>\
+                                            <p class="text-muted mb-0">Kode API :' + arrayData.KODEAPIKOTAKABUPATEN + '</p>\
                                         </td>\
                                         <td class="text-break">\
                                             ' + arrayData.NAMAKECAMATAN + '\
-                                            <p class="text-muted">Kode API :' + arrayData.KODEAPIKECAMATAN + '</p>\
+                                            <p class="text-muted mb-0">Kode API :' + arrayData.KODEAPIKECAMATAN + '</p>\
                                         </td>\
                                     </tr>';
                     });

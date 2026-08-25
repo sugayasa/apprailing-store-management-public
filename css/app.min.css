@@ -30092,3 +30092,12 @@ body .note-modal-backdrop {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* Select2 small font size */
+.select2-font-sm,
+.select2-font-sm .select2-selection,
+.select2-font-sm .select2-selection__rendered,
+.select2-font-sm .select2-results__option,
+.select2-font-sm .select2-search__field {
+    font-size: 0.875rem !important;
+}
