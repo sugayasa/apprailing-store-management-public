@@ -244,14 +244,25 @@ function submitCekOngkosKirim() {
                                                 '</tr>';
                                     break;
                                 default:
-                                    rows    =  '<tr><td colspan="'+totalColumns+'" class="text-center">Gagal melakukan parsing data yang berasal dari provider : ' + parsingType + '</td></tr>';
+                                    rows    =  '<tr>\
+                                                    <td colspan="'+totalColumns+'" class="text-center">\
+                                                        Gagal melakukan parsing data yang berasal dari provider : ' + parsingType + '\
+                                                    </td>\
+                                                </tr>';
                                     break;
                             }
                         });
                         break;
                     case 404:
                     default:
-                        rows    =   '<tr><td colspan="'+totalColumns+'" class="text-center">'+getMessageResponse(jqXHR)+'</td></tr>';
+                        rows    =   '<tr>\
+                                        <td colspan="' + totalColumns + '" class="text-center border-bottom-0 pt-5">\
+                                            <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center mb-0">\
+                                                <i class="fa fa-info-circle fa-3x opacity-50"></i>\
+                                                <span>' + getMessageResponse(jqXHR) + '</span>\
+                                            </div>\
+                                        </td>\
+                                    </tr>';
                         break;
                 }
 
