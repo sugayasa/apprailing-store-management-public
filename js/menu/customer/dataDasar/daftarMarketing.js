@@ -74,6 +74,7 @@ function getCustomerDataDasarDaftarMarketing() {
                     activateOnClickImageMarketing();
                     break;
                 case 404:
+                    rowInfoKosong.find('.info').text(getMessageResponse(jqXHR));
                     rowInfoKosong.show();
                     break;
                 default:
