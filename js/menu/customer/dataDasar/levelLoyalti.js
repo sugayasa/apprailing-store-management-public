@@ -26,8 +26,7 @@ if (customerDataDasarLevelLoyaltiFunc == null) {
                 $("#iconLevelLoyaltiImg").removeAttr('src').attr("src", levelLoyaltiIconDefault);
                 modalEditor.modal('show');
                 modalEditor.one('shown.bs.modal', function() {
-                    createUploaderCardLevelLoyalti();
-                    createUploaderIconLevelLoyalti();
+                    createUploaderCardIconLevelLoyalti();
                 });
                 activateOnSubmitFormEditor();
             });
@@ -144,22 +143,19 @@ function activateOnClickBtnDetail() {
 
         modalEditor.modal('show');
         modalEditor.one('shown.bs.modal', function() {
-            createUploaderCardLevelLoyalti();
-            createUploaderIconLevelLoyalti();
+            createUploaderCardIconLevelLoyalti();
         });
         activateOnSubmitFormEditor();
     });
 }
 
-function createUploaderCardLevelLoyalti() {
+function createUploaderCardIconLevelLoyalti() {
     createUploadFileInput("uploadCardLevelLoyalti", baseURLPath+"uploadCard", function(files, data, jqXHR, pd) {
         var responseJSON=   jqXHR.responseJSON;
         $("#cardLevelLoyaltiImg").removeAttr('src').attr("src", responseJSON.urlCard);
         modalEditor.find('input[name="cardFileName"]').val(responseJSON.fileName);
     });
-}
 
-function createUploaderIconLevelLoyalti() {
     createUploadFileInput("uploadIconLevelLoyalti", baseURLPath+"uploadIcon", function(files, data, jqXHR, pd) {
         var responseJSON=   jqXHR.responseJSON;
         $("#iconLevelLoyaltiImg").removeAttr('src').attr("src", responseJSON.urlIcon);
