@@ -2,6 +2,10 @@ let tabId;
 var lastFocusElem = null;
 
 $(document).ready(function () {
+    $('#platformOption').on('platformChange', function (e, platformId) {
+        $("#top-nav").find('.menu-item.top-level[data-id-platform!="' + platformId + '"]').addClass('d-none');
+        $("#top-nav").find('.menu-item.top-level[data-id-platform="' + platformId + '"], .menu-item.top-level[data-id-platform="0"]').removeClass('d-none');
+    });
 
     $(".menu-app-item").on("click", function () {
         hideModalResetActiveMenuLinkSetLoader();
@@ -41,14 +45,19 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '[data-select="platform-dropdown-selection"]', function(e) {
-		e.preventDefault();
-		
-		const targetValue = $(this).attr('data-value');
-		const targetContainer = $(this).attr('data-target');
-		
-		$(targetContainer).html(targetValue);
-	});
+    $(document).on('click', '[data-select="platform-dropdown-selection"]', function (e) {
+        e.preventDefault();
+
+        const $this         = $(this);
+        const selectedId    = $this.attr('data-id');
+        const selectedValue = $this.attr('data-value');
+        const $target       = $($this.attr('data-target'));
+
+        if ($target.text().trim() === selectedValue) return;
+
+        $target.html(selectedValue);
+        $target.trigger('platformChange', [selectedId]);
+    });
 
     $('#modal-userProfile').off('show.bs.modal'),
     $('#modal-userProfile').on('show.bs.modal', function () {
@@ -780,7 +789,8 @@ function calculateRemainingHeightDoc(extraElementIds = []) {
         });
     }
     
-    return window.innerHeight - excludedHeight;
+    let remainingHeight = window.innerHeight - excludedHeight;
+    return remainingHeight <= 10 ? excludedHeight / 2 : remainingHeight;
 }
 
 function applyAutoResizeDocHeight(selector, extraElementIds = []) {
