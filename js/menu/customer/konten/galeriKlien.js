@@ -193,8 +193,8 @@ function createUploaderLogoKlien() {
 }
 
 function activateOnSubmitFormEditorKlien() {
-    modalEditor.find('form').off('submit');
-    modalEditor.find('form').on('submit', function(e) {
+    modalEditorKlien.find('form').off('submit');
+    modalEditorKlien.find('form').on('submit', function(e) {
         e.preventDefault();
         let formData    =   $(this).serializeArray(),
             dataSend    =   {};
@@ -220,7 +220,7 @@ function activateOnSubmitFormEditorKlien() {
                 switch (jqXHR.status) {
                     case 200:
                         toastMessage("success", getMessageResponse(jqXHR));
-                        modalEditor.modal('hide');
+                        modalEditorKlien.modal('hide');
                         getCustomerKontenGaleriKlien();
                         break;
                     default:
